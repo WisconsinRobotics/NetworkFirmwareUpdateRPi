@@ -5,10 +5,11 @@ from flask 			import flash, Flask, request, redirect, render_template, \
 				  		   url_for, send_from_directory
 from werkzeug.utils import secure_filename
 									# Where to save uploaded images
-UPLOAD_FOLDER = '/media/tim/HDD/workspace/server/app/firmwareImages'
+UPLOAD_FOLDER = app.root_path + '/firmwareImages'
 ALLOWED_EXTENSIONS = set(['bin'])	# Only .bin image files allowed
 
-app = Flask(__name__)
+									# Setup for relative file paths
+app = Flask(__name__, instance_relative_config=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def allowed_file(filename):			# Enforce allowed filename extensions
