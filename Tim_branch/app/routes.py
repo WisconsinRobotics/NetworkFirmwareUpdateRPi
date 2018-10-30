@@ -29,20 +29,20 @@ def upload():
 	if request.method == 'POST':	# Respond to POST requests
 		
 		if 'file' not in request.files:	# Check if request contains file
-			print 'No file part'
+			print('No file part')
 			return redirect(request.url)
 		file = request.files['file']
 		
 		if file.filename == '':			# Check if user selected a file
-			print 'No selected file'
+			print('No selected file')
 			return redirect(request.url)
 										# Check if allowed, sanitize input
 		if file and allowed_file(file.filename):
 			filename = secure_filename(file.filename)
-			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+			file.save(UPLOAD_FOLDER + '/' + filename)
 			return redirect(request.url)
 			
-	return render_template('upload.html')
+	return render_template('vue_boot_example.html')
 		
 @app.route('/upload/<filename>')
 def image_file(filename):			# Return uploaded image
