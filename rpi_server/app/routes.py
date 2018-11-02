@@ -20,11 +20,12 @@ def allowed_file(filename):            # Enforce allowed filename extensions
 
 @app.route('/')
 def root():
-    return render_template('index.html')
+    return redirect(url_for('index'))
 
-# @app.route('/index')
-# def index():
-#     return 'Index'
+# Shows the home page
+@app.route('/index')
+def index():
+    return render_template('index.html')
 
 @app.route('/upload', methods = ['GET', 'POST'])
 def upload():
@@ -32,25 +33,43 @@ def upload():
 
         if 'file' not in request.files:    # Check if request contains file
             print('No file part')
-            return redirect(request.url)
+            return redirect(url_for('index'))
         file = request.files['file']
 
-        if file.filename == '':            # Check if user selected a file
-            print('No selected file')
-            return redirect(request.url)
-                                        # Check if allowed, sanitize input
-        if file and allowed_file(file.filename):
+        if file.filename == '' or not allowed_file(file.filename):            # Check if user selected a file
+            print('File not selected or file extension not allowed')
+            return redirect(url_for('index'))
+
+        # Check if allowed, sanitize input
+        if file:
             filename = secure_filename(file.filename)
             if not os.path.exists(UPLOAD_FOLDER):
                 os.makedirs(UPLOAD_FOLDER)
-            file.save(UPLOAD_FOLDER + '/' + filename)
-            return redirect(request.url)
+            filepath = UPLOAD_FOLDER + '/' + filename
+            file.save(filepath)
+            uploadMicroprocessor(filepath)
+            return redirect(url_for('index'))
 
 @app.route('/upload/<filename>')
 def image_file(filename):            # Return uploaded image
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
-# with app.test_request_context():
-#     #print(url_for('index'))
-#     print(url_for('upload'))
-#     print(url_for('upload', next = '/'))
+def uploadMicroprocessor(filepath):
+    HOST = '127.0.0.1'  # IP address of the microprocessor
+    PORT = 12579        # Port to listen on
+    with socket.socket() as s:
+        s.connect((HOST, PORT))
+
+        # send file size first
+        file_size = os.path.getsize(filepath).to_bytes(2, byteorder='big')
+        s.sendall(file_size)
+
+        # Check clear to send
+        cts = s.recv(4)
+        cts = int.from_bytes(cts, byteorder='big')
+
+        # Send file if clear to send received
+        if cts == 1:
+            with open(filepath, 'rb') as f:
+                image = f.read()
+                s.sendall(image)
