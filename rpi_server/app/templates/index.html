@@ -20,50 +20,44 @@
 	<script type="text/javascript" src="{{ url_for('static', filename='vue.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='polyfill.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='bootstrap-vue.js') }}"></script>
-	
-	
 
-	
+
   </head>
 
   <body>
     <!-- Our application root element -->
     <div id="app">
       <b-container>
-        <b-jumbotron header="UW-Robotics firmware update over ethernet"
-                     lead="CS 506 Project"
-        >
-          <p>For more information visit our website</p>
-          <b-btn variant="primary"  onclick="document.getElementById('demo1').innerHTML = Date()"> Flash Firmware</b-btn>
+        <b-jumbotron style="background-color: #d00d1f"
+                     text-variant="white"
+                     header="Robot Image Programmer"
+                     lead="CS 506 Project" >
+           <form action="/upload"
+         	       enctype="multipart/form-data" method="post">
+            <b-form-file v-model="file"
+                         :state="Boolean(file)"
+                         type="file"
+                         name="file"
+                         placeholder="Choose a file..."
+                         style="margin:10px 0px"></b-form-file>
+            <b-btn variant="secondary" type="submit"> Flash Firmware</b-btn>
+          </form>
         </b-jumbotron>
-
-        <b-form-group horizontal
-                      :label-cols="4"
-                      description="Let us know your name."
-                      label="Enter your name"
-        >
-           <b-form-input v-model.trim="name"></b-form-input>
-        </b-form-group>
-
-        <b-alert variant="success" :show="showAlert">
-          Hello {{ name }}
-        </b-alert>
       </b-container>
     </div>
-	<form action="/upload"
+
+	<!-- <form action="/upload"
 	enctype="multipart/form-data" method="post">
-	<p>
-	Type some text (if you like):<br>
-	<input type="text" name="textline" size="30">
-	</p>
-	<p>
-	Please specify a file, or a set of files:<br>
-	<input type="file" name="file" size="40">
-	</p>
-	<div>
-	<input type="submit" value="Send">
-	</div>
-	</form>
+
+  	<p>
+  	Please specify a file, or a set of files:<br>
+  	<input type="file" name="file" size="40">
+  	</p>
+  	<div>
+  	   <input type="submit" value="Send">
+  	</div>
+	</form> -->
+  
     <!-- Start running your app -->
     <script>
       window.app = new Vue({
@@ -78,6 +72,5 @@
         }
       })
     </script>
-	<p id="demo1"></p>
   </body>
 </html>
