@@ -1,14 +1,17 @@
+
 ## Home page URLs and their functions
 
 # System imports
 import datetime
 import os
 import socket
+import requests 
 
 # Server imports
 from app import app, UPLOAD_FOLDER
 from flask import Flask, request, redirect, render_template, \
-                             url_for, send_from_directory
+                             url_for, send_from_directory, jsonify
+
 from werkzeug.utils import secure_filename
 
 # DB imports
@@ -17,29 +20,33 @@ from app import db
 
 # Only .bin image files allowed
 ALLOWED_EXTENSIONS = set(['bin'])
+UPLOAD_FOLDER = app.root_path + '/firmwareImages'
 
-# Setup for relative file paths
-app = Flask(__name__, instance_relative_config=True)
+app = Flask(__name__,
+            static_folder="./dist/static",
+            template_folder="./dist")
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 def allowed_file(filename):            # Enforce allowed filename extensions
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/')
-def root():
-    return redirect(url_for('index'))
+@app.route('/api/random')
+def random_number():
+    response = {
+        'randomNumber': randint(1, 100)
+    }
+    return jsonify(response)
 
-# Shows the home page
-@app.route('/index')
-def index():
-    return render_template('index.html')
 
 # Downloads a file to server
-@app.route('/upload', methods = ['GET', 'POST'])
+@app.route('/api/upload', methods=['GET', 'POST'])
 def upload():
     # Respond to POST requests
     if request.method == 'POST':
+
 
         # Check if request contains file
         if 'file' not in request.files:
@@ -76,7 +83,7 @@ def upload():
     return redirect(url_for('index'))
 
 # Uploads a file to user/robot
-@app.route('/download/<filename>')
+@app.route('/api/download/<filename>')
 def image_file(filename):
     # Upload saved image to requester
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
@@ -111,3 +118,16 @@ def uploadMicroprocessor(filepath):
             with open(filepath, 'rb') as f:
                 image = f.read()
                 s.sendall(image)
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    if app.debug:
+        return requests.get('http://localhost:8080/{}'.format(path)).text
+    return render_template("index.html")
+
+@app.route('/index')
+def index():
+    if app.debug:
+        return requests.get('http://localhost:8080/').text
+    return render_template("index.html")

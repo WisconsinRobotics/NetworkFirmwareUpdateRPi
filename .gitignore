@@ -1,2 +1,4 @@
 **/*pycache*
 **/*firmwareImages*/
+**/*node_modules*/
+**/*dist
