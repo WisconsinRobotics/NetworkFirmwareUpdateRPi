@@ -38,7 +38,14 @@ To share internet access with the Pi from your local machine:
             -Turn on wired connection (should see a checkmark by RPi Share)
 
         On Windows:
-            -TODO
+            -Open 'Network Connections'
+            -Right click 'Wireless Network Connection'
+            -Select 'Properties'
+            -Navigate to the 'Sharing' tab
+            -Allow other network users to connect through this computer's Internet connection (check the box)
+            -Select the appropriate 'Local Area Connection' from the dropdown menu
+            -Do not allow other network users to control or disable the shared Internet connection (uncheck the box)
+            -Select 'OK'
 
         On Mac:
             -TODO
