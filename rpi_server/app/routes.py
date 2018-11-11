@@ -35,20 +35,21 @@ def upload():
             print('No file part')
             return redirect(url_for('index'))
         file = request.files['file']
-
-        if file.filename == '' or not allowed_file(file.filename):            # Check if user selected a file
+                                           # Check if user selected a file
+        if file.filename == '' or not allowed_file(file.filename):
             print('File not selected or file extension not allowed')
             return redirect(url_for('index'))
 
         # Check if allowed, sanitize input
         if file:
             filename = secure_filename(file.filename)
+                                        # Check if upload path exists, make it
             if not os.path.exists(UPLOAD_FOLDER):
                 os.makedirs(UPLOAD_FOLDER)
-            filepath = UPLOAD_FOLDER + '/' + filename
-            file.save(filepath)
-            uploadMicroprocessor(filepath)
-            return redirect(url_for('index'))
+            file.save(UPLOAD_FOLDER + '/' + filename)
+        file.close()             # Close uploaded file
+
+    return redirect(url_for('index'))
 
 @app.route('/upload/<filename>')
 def image_file(filename):            # Return uploaded image
