@@ -1,4 +1,5 @@
 # Home page URLs and their functions
+import datetime
 import os
 import socket
 from app import app
@@ -27,32 +28,43 @@ def root():
 def index():
     return render_template('index.html')
 
+# Downloads a file to server
 @app.route('/upload', methods = ['GET', 'POST'])
 def upload():
-    if request.method == 'POST':    # Respond to POST requests
+    # Respond to POST requests
+    if request.method == 'POST':
 
-        if 'file' not in request.files:    # Check if request contains file
+        # Check if request contains file
+        if 'file' not in request.files:
             print('No file part')
             return redirect(url_for('index'))
         file = request.files['file']
-                                           # Check if user selected a file
+
+        # Check if user selected an allowed file
         if file.filename == '' or not allowed_file(file.filename):
             print('File not selected or file extension not allowed')
             return redirect(url_for('index'))
 
-        # Check if allowed, sanitize input
+        # Sanitize filename just in case
         if file:
             filename = secure_filename(file.filename)
-                                        # Check if upload path exists, make it
+
+            # Check if upload path exists, make it
             if not os.path.exists(UPLOAD_FOLDER):
                 os.makedirs(UPLOAD_FOLDER)
-            file.save(UPLOAD_FOLDER + '/' + filename)
-        file.close()             # Close uploaded file
+
+            # Save file named by timestamp
+            file.save(UPLOAD_FOLDER + '/' + str(datetime.datetime.now()))
+
+        # Close uploaded file
+        file.close()
 
     return redirect(url_for('index'))
 
+# Uploads a file to user/robot
 @app.route('/upload/<filename>')
-def image_file(filename):            # Return uploaded image
+def image_file(filename):
+    # Return uploaded image
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 def uploadMicroprocessor(filepath):
