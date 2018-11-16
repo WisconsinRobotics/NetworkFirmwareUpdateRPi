@@ -18,12 +18,12 @@
               
               <md-field>
                 <label>Browse for Image</label>
-                <md-file v-model="local_image" />
+                <md-file @change="onFileUpload($event)" v-model="filename" accept=".bin"/>
               </md-field>
 
               <div class="md-layout md-alignment-top-center">
                 <div class="md-layout-item md-size-100">
-                  <md-button class="md-danger md-block" @click="submitFile"><md-icon>flash_on</md-icon>Flash Firmware</md-button>
+                  <md-button class="md-danger md-block" @click="submitFile"><md-icon>flash_on</md-icon>Flash {{filename}}</md-button>
                 </div>
               </div>
 
@@ -32,22 +32,17 @@
             <template slot="tab-pane-2">
               Select an image to flash from tagged releases on github
 
-
-              <div class="md-layout md-alignment-top-center">
-                <div class="md-layout-item md-size-100">
-                  <md-button class="md-danger md-block" @click="submitFile"><md-icon>flash_on</md-icon>Flash Firmware</md-button>
-                </div>
-              </div>
-
             </template>
 
-            <template slot="tab-pane-3">
+            <template slot="tab-pane-3" @click="getHistory">
               Select an image to upload from recently flashed images
-              <p>Random number from backend: {{ randomNumber }}</p>
+              <div v-for="image of history">
+                <md-radio v-model="radioImage" :value="image">{{ image }}</md-radio>
+              </div>
 
               <div class="md-layout md-alignment-top-center">
                 <div class="md-layout-item md-size-100">
-                  <md-button class="md-danger md-block" @click="getRandom"><md-icon>flash_on</md-icon>Flash Firmware</md-button>
+                  <md-button class="md-danger md-block" @click="selectHistory"><md-icon>flash_on</md-icon>Flash {{radioImage}}</md-button>
                 </div>
               </div>
 
@@ -67,7 +62,10 @@ import axios from 'axios';
 export default {
   data: () => ({
     randomNumber: 0,
-    local_image: null,
+    filename: null,
+    file: null,
+    history: ["option 1", "option 2", "option 3"],
+    radioImage: null
   }),
   components: {
     Tabs,
@@ -75,10 +73,7 @@ export default {
   methods: {
     submitFile() {
       let formData = new FormData();
-      console.log(this.local_image);
-      formData.append('file', this.local_image);
-      console.log(formData.getAll('file'));
-      console.log('>> formData >> ', formData);
+      formData.append('file', this.file);
 
       axios
         .post('http://localhost:5000/api/upload', formData, {
@@ -86,28 +81,22 @@ export default {
             'Content-Type': 'multipart/form-data',
           },
         })
-        .then(function() {
-          console.log('SUCCESS!!');
-        })
-        .catch(function() {
-          console.log('FAILURE!!');
-        });
     },
-    getRandom() {
-      this.randomNumber = this.getRandomFromBackend();
+    onFileUpload(event) {
+      this.file = event.target.files[0];
     },
-    getRandomFromBackend() {
-      const path = `http://localhost:5000/api/random`;
+    getHistory() {
+      console.log("This will call history api")
+      this.history = ["option 1", "option 2", "option 3"]
+    },
+    selectHistory() {
       axios
-        .get(path)
-        .then(response => {
-          this.randomNumber = response.data.randomNumber;
-          console.log(this.randomNumber);
+        .post('http://localhost:5000/api/selectHistory', radioImage, {
+          headers: {
+            'Content-Type': 'text/plain',
+          },
         })
-        .catch(error => {
-          console.log(error);
-        });
-    },
+    }
   },
 };
 </script>

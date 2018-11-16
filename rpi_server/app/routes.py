@@ -33,21 +33,11 @@ def allowed_file(filename):            # Enforce allowed filename extensions
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/api/random')
-def random_number():
-    response = {
-        'randomNumber': randint(1, 100)
-    }
-    return jsonify(response)
-
-
-# Downloads a file to server
 @app.route('/api/upload', methods=['GET', 'POST'])
 def upload():
     # Respond to POST requests
     if request.method == 'POST':
-
-
+        
         # Check if request contains file
         if 'file' not in request.files:
             print('No file part')
@@ -89,13 +79,25 @@ def image_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 # List all uploaded images, ordered recent first
-@app.route('/history')
+
+
+@app.route('/api/history', methods=['GET'])
 def history():
     # Get populated HTML page
     page = db.list_imgs()
     rows = page[1]
     page = page[0]
 
+    # Return populated page
+    return render_template(page,rows = rows)
+
+@app.route('/api/selectHistory', methods=['POST'])
+def select_history():
+    # Get populated HTML page
+    page = db.list_imgs()
+    rows = page[1]
+    page = page[0]
+    
     # Return populated page
     return render_template(page,rows = rows)
 
