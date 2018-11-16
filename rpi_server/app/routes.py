@@ -82,6 +82,17 @@ def image_file(filename):
     # Upload saved image to requester
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+# List all uploaded images, ordered recent first
+@app.route('/history')
+def history():
+    # Get populated HTML page
+    page = db.list_imgs()
+    rows = page[1]
+    page = page[0]
+    
+    # Return populated page
+    return render_template(page,rows = rows)
+   
 def uploadMicroprocessor(filepath):
     HOST = '127.0.0.1'  # IP address of the microprocessor
     PORT = 12579        # Port to listen on

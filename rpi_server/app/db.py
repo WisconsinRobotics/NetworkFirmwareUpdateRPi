@@ -9,7 +9,6 @@ from flask import g
 
 #Server imports
 from app   import app
-from app   import routes
 
 # Location of DB
 DATABASE = app.root_path + '/firmwareImages/database.db'
@@ -79,6 +78,24 @@ def add_img(name):
         con.rollback()
         print('Failed to add image to DB')
 
+# List DB entries
+def list_imgs():
+    # Connect to the DB
+    con = get_db()
+    con.row_factory = sql.Row
+    cur = con.cursor()
+    try:
+        # Query for top 10 entries
+        cur.execute("SELECT * FROM images LIMIT 10")
+        rows = cur.fetchall(); 
+        
+    except:
+        print('Failed to query images')
+        
+            
+    # Return populated page
+    return ("history.html",rows)
+    
 # Start the DB immediately
 with app.app_context():
     init_db()
