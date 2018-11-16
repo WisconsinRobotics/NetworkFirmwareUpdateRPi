@@ -23,10 +23,20 @@
 
 
   </head>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 
   <body>
     <!-- Our application root element -->
     <div id="app">
+
       <b-container>
         <b-jumbotron style="background-color: #d00d1f"
                      text-variant="white"
@@ -40,6 +50,10 @@
                          name="file"
                          placeholder="Choose a file..."
                          style="margin:10px 0px"></b-form-file>
+			{% if error %}
+				<p class=error><strong>Error:</strong> {{ error }}
+				</p>
+			{% endif %}
             <b-btn variant="secondary" type="submit"> Flash Firmware</b-btn>
           </form>
         </b-jumbotron>
@@ -74,3 +88,4 @@
     </script>
   </body>
 </html>
+

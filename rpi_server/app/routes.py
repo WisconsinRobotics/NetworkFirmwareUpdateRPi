@@ -4,85 +4,88 @@ import os
 import socket
 from app import app
 from flask import flash, Flask, request, redirect, render_template, \
-                             url_for, send_from_directory
+							 url_for, send_from_directory
 from werkzeug.utils import secure_filename
 
 # Where to save uploaded images
 UPLOAD_FOLDER = app.root_path + '/firmwareImages'
-ALLOWED_EXTENSIONS = set(['bin'])    # Only .bin image files allowed
+ALLOWED_EXTENSIONS = set(['bin'])	 # Only .bin image files allowed
 
 # Setup for relative file paths
 app = Flask(__name__, instance_relative_config=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-def allowed_file(filename):            # Enforce allowed filename extensions
-    return '.' in filename and \
-        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+def allowed_file(filename):			   # Enforce allowed filename extensions
+	return '.' in filename and \
+		filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/')
 def root():
-    return redirect(url_for('index'))
+	return redirect(url_for('index'))
 
 # Shows the home page
 @app.route('/index')
 def index():
-    return render_template('index.html')
+	return render_template('index.html')
 
 # Downloads a file to server
 @app.route('/upload', methods = ['GET', 'POST'])
 def upload():
-    # Respond to POST requests
-    if request.method == 'POST':
+	error = None
+	# Respond to POST requests
+	if request.method == 'POST':
 
-        # Check if request contains file
-        if 'file' not in request.files:
-            print('No file part')
-            return redirect(url_for('index'))
-        file = request.files['file']
+		# Check if request contains file
+		if 'file' not in request.files:
+			error = 'No file selected'
+			return render_template('index.html', error=error)
+		#If the request does contain a file, grab it
+		file = request.files['file']
+		# Check if user selected an allowed file
+		if file.filename == '' or not allowed_file(file.filename):
+			error = 'Invalid file type. Requires .bin file type. Filename = ' + file.filename
+			return render_template('index.html', error=error)
 
-        # Check if user selected an allowed file
-        if file.filename == '' or not allowed_file(file.filename):
-            print('File not selected or file extension not allowed')
-            return redirect(url_for('index'))
+		
+		# Sanitize filename just in case
+		if file:
+			filename = secure_filename(file.filename)
 
-        # Sanitize filename just in case
-        if file:
-            filename = secure_filename(file.filename)
+			# Check if upload path exists, make it
+			if not os.path.exists(UPLOAD_FOLDER):
+				os.makedirs(UPLOAD_FOLDER)
 
-            # Check if upload path exists, make it
-            if not os.path.exists(UPLOAD_FOLDER):
-                os.makedirs(UPLOAD_FOLDER)
+			# Save file named by timestamp
+			file.save(UPLOAD_FOLDER + '/' + str(datetime.datetime.now()))
 
-            # Save file named by timestamp
-            file.save(UPLOAD_FOLDER + '/' + str(datetime.datetime.now()))
+		# Close uploaded file
+		file.close()
 
-        # Close uploaded file
-        file.close()
-
-    return redirect(url_for('index'))
+	return render_template('index.html', error="Successful upload")
 
 # Uploads a file to user/robot
 @app.route('/upload/<filename>')
 def image_file(filename):
-    # Return uploaded image
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+	# Return uploaded image
+	return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 def uploadMicroprocessor(filepath):
-    HOST = '127.0.0.1'  # IP address of the microprocessor
-    PORT = 12579        # Port to listen on
-    with socket.socket() as s:
-        s.connect((HOST, PORT))
+	HOST = '127.0.0.1'	# IP address of the microprocessor
+	PORT = 12579		# Port to listen on
+	with socket.socket() as s:
+		s.connect((HOST, PORT))
 
-        # send file size first
-        file_size = os.path.getsize(filepath).to_bytes(2, byteorder='big')
-        s.sendall(file_size)
+		# send file size first
+		file_size = os.path.getsize(filepath).to_bytes(2, byteorder='big')
+		s.sendall(file_size)
 
-        # Check clear to send
-        cts = s.recv(4)
-        cts = int.from_bytes(cts, byteorder='big')
+		# Check clear to send
+		cts = s.recv(4)
+		cts = int.from_bytes(cts, byteorder='big')
 
-        # Send file if clear to send received
-        if cts == 1:
-            with open(filepath, 'rb') as f:
-                image = f.read()
-                s.sendall(image)
+		# Send file if clear to send received
+		if cts == 1:
+			with open(filepath, 'rb') as f:
+				image = f.read()
+				s.sendall(image)
+
