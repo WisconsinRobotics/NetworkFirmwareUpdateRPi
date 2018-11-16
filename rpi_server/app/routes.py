@@ -77,9 +77,9 @@ def upload():
     return redirect(url_for('index'))
 
 # Uploads a file to user/robot
-@app.route('/upload/<filename>')
+@app.route('/download/<filename>')
 def image_file(filename):
-    # Return uploaded image
+    # Upload saved image to requester
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 def uploadMicroprocessor(filepath):
