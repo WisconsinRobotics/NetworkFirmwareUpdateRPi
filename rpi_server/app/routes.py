@@ -5,19 +5,18 @@ import datetime
 import os
 import socket
 
-# DB imports
-import sqlite3 as sql
-from app import db
-
 # Server imports
-from app import app
+from app import app, UPLOAD_FOLDER
 from flask import Flask, request, redirect, render_template, \
                              url_for, send_from_directory
 from werkzeug.utils import secure_filename
 
-# Where to save uploaded images
-UPLOAD_FOLDER = app.root_path + '/firmwareImages'
-ALLOWED_EXTENSIONS = set(['bin'])    # Only .bin image files allowed
+# DB imports
+import sqlite3 as sql
+from app import db
+
+# Only .bin image files allowed
+ALLOWED_EXTENSIONS = set(['bin'])
 
 # Setup for relative file paths
 app = Flask(__name__, instance_relative_config=True)
@@ -89,10 +88,10 @@ def history():
     page = db.list_imgs()
     rows = page[1]
     page = page[0]
-    
+
     # Return populated page
     return render_template(page,rows = rows)
-   
+
 def uploadMicroprocessor(filepath):
     HOST = '127.0.0.1'  # IP address of the microprocessor
     PORT = 12579        # Port to listen on

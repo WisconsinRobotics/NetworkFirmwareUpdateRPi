@@ -3,15 +3,13 @@
 # System imports
 import os
 
-# DB imports
-import sqlite3 as sql
-from flask import g
-
 #Server imports
 from app   import app
 
-# Location of DB
-DATABASE = app.root_path + '/firmwareImages/database.db'
+# DB imports
+import sqlite3 as sql
+from flask import g
+from app   import DATABASE
 
 # Establishes DB connection, reused in subsequent calls
 def get_db():
@@ -20,14 +18,14 @@ def get_db():
 
     # Get DB handle
     db = getattr(g, app.config['DATABASE'], None)
-    
+
     # Create DB connection if needed
     if db is None:
         db = g.db = sql.connect(app.config['DATABASE'])
-        
+
     # Create DB connection if needed
     #if 'db' not in g:
-    #            
+    #
     #    g.db = sql.connect
     #    (
     #        app.config['DATABASE']
@@ -63,7 +61,7 @@ def add_img(name):
     # Connect to the DB
     con = get_db()
     cur = con.cursor()
-    
+
     try:
         # Insert a new entry
         con.execute('''INSERT INTO images (name)
@@ -72,7 +70,7 @@ def add_img(name):
         # Write changes to DB
         con.commit()
         print('Added a new image to DB')
-        
+
     except:
         # Revert changes upon failure
         con.rollback()
@@ -87,15 +85,12 @@ def list_imgs():
     try:
         # Query for top 10 entries
         cur.execute("SELECT * FROM images LIMIT 10")
-        rows = cur.fetchall(); 
-        
+        rows = cur.fetchall();
+
     except:
         print('Failed to query images')
-        
-            
+
+
     # Return populated page
     return ("history.html",rows)
-    
-# Start the DB immediately
-with app.app_context():
-    init_db()
+
