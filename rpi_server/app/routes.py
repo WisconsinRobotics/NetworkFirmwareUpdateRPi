@@ -1,9 +1,17 @@
-# Home page URLs and their functions
+## Home page URLs and their functions
+
+# System imports
 import datetime
 import os
 import socket
+
+# DB imports
+import sqlite3 as sql
+from app import db
+
+# Server imports
 from app import app
-from flask import flash, Flask, request, redirect, render_template, \
+from flask import Flask, request, redirect, render_template, \
                              url_for, send_from_directory
 from werkzeug.utils import secure_filename
 
@@ -45,16 +53,23 @@ def upload():
             print('File not selected or file extension not allowed')
             return redirect(url_for('index'))
 
-        # Sanitize filename just in case
+        # Store the file
         if file:
+            # Sanitize filename (useless now)
             filename = secure_filename(file.filename)
+
+            # Use timestamp as filename
+            filename = str(datetime.datetime.now())
 
             # Check if upload path exists, make it
             if not os.path.exists(UPLOAD_FOLDER):
                 os.makedirs(UPLOAD_FOLDER)
 
             # Save file named by timestamp
-            file.save(UPLOAD_FOLDER + '/' + str(datetime.datetime.now()))
+            file.save(UPLOAD_FOLDER + '/' + filename)
+
+            # Add to DB
+            db.add_img(filename)
 
         # Close uploaded file
         file.close()
