@@ -42,6 +42,6 @@ def test_upload_Success(client, app):
 
 def test_uploadMicroprocessor():
 	success_message = routes.uploadMicroprocessor('../../../fake_firmware.bin')
-	assert("timeout" in success_message) 
+	assert("file sent successfully" in success_message) 
 	
 

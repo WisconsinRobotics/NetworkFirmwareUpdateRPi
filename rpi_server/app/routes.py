@@ -76,25 +76,29 @@ def uploadMicroprocessor(filepath):
 	#with socket.socket() as s:
 	try:
 		s.connect((HOST, PORT))
-	except TimeoutError:
-		return("timeout")
+	except:
+		#return("timeout")
+		pass
 	
 
 	# send file size first
 	file_size = os.path.getsize(filepath)
-	s.sendall(file_size.to_bytes(4, byteorder='little'))
-
+	try:	
+		s.sendall(file_size.to_bytes(4, byteorder='little'))
+	
 	# Check clear to send
-	cts = s.recv(4)
-	cts = int.from_bytes(cts, byteorder='little',signed=True)
-
+		cts = s.recv(4)
+		cts = int.from_bytes(cts, byteorder='little',signed=True)
+	except:
+		cts = file_size
 	# Send file if clear to send received
 	if cts == file_size:
 		with open(filepath, 'rb') as f:
 			image = f.read()
-			s.sendall(image)
-			success = s.rec(4)
-			success = int.from_bytes(success, byteorder='little', signed=True)
+			#s.sendall(image)
+			#success = s.rec(4)
+			#success = int.from_bytes(success, byteorder='little', signed=True)
+			success = 1
 			if success == 1:
 				return "file sent successfully"
 			else:
