@@ -5,6 +5,9 @@ import pytest
 import unittest
 from flask import flash, Flask, request, redirect, render_template, \
 							 url_for, send_from_directory
+
+
+
 sys.path.append('../../')
 sys.path.append('../')
 from app import app
@@ -36,4 +39,8 @@ def test_upload_Success(client, app):
 			response = client.post('/upload', content_type='multipart/form-data',data=data)
 			print(response.data)
 			assert(b"Successful upload" in response.data)
+
+def test_uploadMicroprocessor():
+	success_message = routes.uploadMicroprocessor('../../../fake_firmware.bin')
+	asser("micro couldn't allocate enough memory")
 
