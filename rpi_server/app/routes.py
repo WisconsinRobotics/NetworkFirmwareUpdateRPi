@@ -72,20 +72,30 @@ def image_file(filename):
 def uploadMicroprocessor(filepath):
 	HOST = '127.0.0.1'	# IP address of the microprocessor
 	PORT = 12579		# Port to listen on
-	with socket.socket() as s:
-		s.connect((HOST, PORT))
+	s = socket.socket()
+	#with socket.socket() as s:
+	s.connect((HOST, PORT))
 
-		# send file size first
-		file_size = os.path.getsize(filepath).to_bytes(2, byteorder='big')
-		s.sendall(file_size)
+	# send file size first
+	file_size = os.path.getsize(filepath)
+	s.sendall(file_size.to_bytes(4, byteorder='little'))
 
-		# Check clear to send
-		cts = s.recv(4)
-		cts = int.from_bytes(cts, byteorder='big')
+	# Check clear to send
+	cts = s.recv(4)
+	cts = int.from_bytes(cts, byteorder='little',signed=True)
 
-		# Send file if clear to send received
-		if cts == 1:
-			with open(filepath, 'rb') as f:
-				image = f.read()
-				s.sendall(image)
+	# Send file if clear to send received
+	if cts == file_size:
+		with open(filepath, 'rb') as f:
+			image = f.read()
+			s.sendall(image)
+			success = s.rec(4)
+			success = int.from_bytes(success, byteorder='little', signed=True)
+			if success == 1:
+				return "file sent successfully"
+			else:
+				return "file sending failed, don't know what happened"
+	else:
+		return "micro couldn't allocate enough memory"
+			
 
