@@ -32,3 +32,11 @@ To set up the Raspberry Pi:
             -Connect to the Pi wirelessly via ssh:
                     >ssh pi@192.168.1.200
             -Follow instructions to run the Flask server above
+
+To set up the Microcontroller:
+            -Connect power to the board
+            -Connect the Pi to the board via ethernet cable
+            - run these commands to set up the network interface on the Pi
+                >ip addr add 192.168.0.11/24 dev eth0
+                >ip route add 192.168.0.10 dev eth0
+                Where eth0 is your ethernet interface
