@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <parallax class="page-header header-filter" :style="headerStyle">
+    <div class="page-header header-filter" :style="headerStyle">
       <div class="md-layout">
         <div class="md-layout-item">
           <div class="image-wrapper">
@@ -13,7 +13,7 @@
           </div>
         </div>
       </div>
-    </parallax>
+    </div>
     <div class="main main-raised">
       <div class="section section-white">
         <div class="container">
