@@ -6,26 +6,37 @@
       </div>
       <div class="md-layout md-alignment-top-center">
         <div class="md-layout-item md-size-50 md-small-size-100">
-          <tabs
-            :tab-name="['Upload', 'GitHub', 'History']"
-            :tab-icon="['folder_open', 'cloud_queue', 'history']"
-            plain
-            nav-pills-icons
-            color-button="danger">
+          <tabs :tab-name="['Upload', 'GitHub', 'History']" :tab-icon="['folder_open', 'cloud_queue', 'history']" plain nav-pills-icons color-button="danger">
 
             <template slot="tab-pane-1">
               Select an image to flash from your files
-              
+
               <md-field>
                 <label>Browse for Image</label>
-                <md-file @change="onFileUpload($event)" v-model="filename" accept=".bin"/>
+                <md-file @change="onFileUpload($event)" v-model="filename" accept=".bin" />
               </md-field>
 
               <div class="md-layout md-alignment-top-center">
                 <div class="md-layout-item md-size-100">
-                  <md-button class="md-danger md-block" @click="submitFile"><md-icon>flash_on</md-icon>Flash {{filename}}</md-button>
+                  <md-button class="md-danger md-block" @click="submitFile">
+                    <md-icon>flash_on</md-icon>Flash {{filename}}
+                  </md-button>
                 </div>
               </div>
+
+              <template v-if="noFile">
+                <div class="alert alert-danger">
+                  <div class="container">
+                    <button type="button" aria-hidden="true" class="close" @click="event => removeNotify(event,'alert-danger')">
+                      <md-icon>clear</md-icon>
+                    </button>
+                    <div class="alert-icon">
+                      <md-icon>info_outline</md-icon>
+                    </div>
+                    <b> ERROR ALERT </b> : No File Selected! Select a .bin image to flash.
+                  </div>
+                </div>
+              </template>
 
             </template>
 
@@ -42,12 +53,14 @@
 
               <div class="md-layout md-alignment-top-center">
                 <div class="md-layout-item md-size-100">
-                  <md-button class="md-danger md-block" @click="selectHistory"><md-icon>flash_on</md-icon>Flash {{radioImage}}</md-button>
+                  <md-button class="md-danger md-block" @click="selectHistory">
+                    <md-icon>flash_on</md-icon>Flash {{radioImage}}
+                  </md-button>
                 </div>
               </div>
 
             </template>
-            
+
           </tabs>
         </div>
       </div>
@@ -64,39 +77,59 @@ export default {
     randomNumber: 0,
     filename: null,
     file: null,
-    history: ["option 1", "option 2", "option 3"],
-    radioImage: null
+    history: ['option 1', 'option 2', 'option 3'],
+    radioImage: null,
+    noFile: false,
   }),
   components: {
     Tabs,
   },
   methods: {
     submitFile() {
+      console.log;
+      if (this.file == null) {
+        this.noFile = true;
+        return;
+      }
       let formData = new FormData();
       formData.append('file', this.file);
 
-      axios
-        .post('http://localhost:5000/api/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
+      axios.post('http://localhost:5000/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
     },
     onFileUpload(event) {
       this.file = event.target.files[0];
     },
     getHistory() {
-      console.log("This will call history api")
-      this.history = ["option 1", "option 2", "option 3"]
+      axios
+        .get('http://localhost:5000/api/history')
+        .then(function(historyJSON) {
+          // handle success
+          console.log(historyJSON);
+        })
+        .catch(function(error) {
+          // handle error
+          console.log(error);
+        });
+      this.history = ['option 1', 'option 2', 'option 3'];
     },
     selectHistory() {
-      axios
-        .post('http://localhost:5000/api/selectHistory', radioImage, {
-          headers: {
-            'Content-Type': 'text/plain',
-          },
-        })
-    }
+      axios.post('http://localhost:5000/api/selectHistory', radioImage, {
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+      });
+    },
+    removeNotify(e, notifyClass) {
+      var target = e.target;
+      while (target.className.indexOf(notifyClass) === -1) {
+        target = target.parentNode;
+      }
+      return target.parentNode.removeChild(target);
+    },
   },
 };
 </script>
