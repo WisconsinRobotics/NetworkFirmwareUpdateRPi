@@ -5,9 +5,6 @@ import pytest
 import unittest
 from flask import flash, Flask, request, redirect, render_template,  \
 							 url_for, send_from_directory
-from flask_testing import TestCase
-
-
 sys.path.append('../../')
 sys.path.append('../')
 from app import app

@@ -5,9 +5,6 @@ import pytest
 import unittest
 from flask import flash, Flask, request, redirect, render_template, \
 							 url_for, send_from_directory
-from flask_testing import TestCase
-
-
 sys.path.append('../../')
 sys.path.append('../')
 from app import app
@@ -20,7 +17,7 @@ def test_upload_No_File_Selected(client, app):
 	with app.app_context():
 		response = client.post('/upload')
 		print(response.data)
-		assert("No file selected" in response.data)
+		assert(b"No file selected" in response.data)
 
 def test_upload_Invalid_File_Type(client, app):
 	with app.app_context():
@@ -29,7 +26,7 @@ def test_upload_Invalid_File_Type(client, app):
 			data = dict( file=(f, "work_order.123"),)
 			response = client.post('/upload', content_type='multipart/form-data',data=data)
 			print(response.data)
-			assert("Invalid file type. Requires .bin file type. Filename =" in response.data)
+			assert(b"Invalid file type. Requires .bin file type. Filename =" in response.data)
 
 def test_upload_Success(client, app):
 	with app.app_context():
@@ -38,5 +35,5 @@ def test_upload_Success(client, app):
 			data = dict( file=(f, f.name),)
 			response = client.post('/upload', content_type='multipart/form-data',data=data)
 			print(response.data)
-			assert("Successful upload" in response.data)
+			assert(b"Successful upload" in response.data)
 
