@@ -1,11 +1,11 @@
-
 ## Home page URLs and their functions
 
 # System imports
 import datetime
+import json
 import os
 import socket
-import requests 
+import requests
 
 # Server imports
 from app import app, UPLOAD_FOLDER
@@ -20,16 +20,16 @@ from app import db
 
 # Only .bin image files allowed
 ALLOWED_EXTENSIONS = set(['bin'])
-UPLOAD_FOLDER = app.root_path + '/firmwareImages'
 
 app = Flask(__name__,
             static_folder="./dist/static",
             template_folder="./dist")
 
+# Set directory to save images to
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-
-def allowed_file(filename):            # Enforce allowed filename extensions
+# Enforce allowed filename extensions
+def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -37,7 +37,7 @@ def allowed_file(filename):            # Enforce allowed filename extensions
 def upload():
     # Respond to POST requests
     if request.method == 'POST':
-        
+
         # Check if request contains file
         if 'file' not in request.files:
             print('No file part')
@@ -79,17 +79,13 @@ def image_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 # List all uploaded images, ordered recent first
-
-
 @app.route('/api/history', methods=['GET'])
 def history():
     # Get populated HTML page
-    page = db.list_imgs()
-    rows = page[1]
-    page = page[0]
+    rows = db.list_imgs()
 
-    # Return populated page
-    return render_template(page,rows = rows)
+    # Return JSON
+    return json.dumps(rows)
 
 @app.route('/api/selectHistory', methods=['POST'])
 def select_history():
@@ -97,7 +93,7 @@ def select_history():
     page = db.list_imgs()
     rows = page[1]
     page = page[0]
-    
+
     # Return populated page
     return render_template(page,rows = rows)
 
