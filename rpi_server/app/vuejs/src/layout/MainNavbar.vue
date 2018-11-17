@@ -14,10 +14,10 @@
               <!-- Here you can add your items from the section-start of your toolbar -->
             </mobile-menu>
             <md-list>
-              
-              <md-list-item href="https://demos.creative-tim.com/vue-material-kit/documentation/"  target="_blank" v-if="showDownload">
+
+              <md-list-item @click="showDialog = true">
                 <i class="material-icons">content_paste</i>
-                <p>Documentation</p>
+                <p style="margin-bottom: 0px; margin-left: 5px;">Help</p>
               </md-list-item>
 
             </md-list>
@@ -25,6 +25,17 @@
         </div>
       </div>
     </div>
+
+    <md-dialog :md-active.sync="showDialog">
+      <md-dialog-title>Help</md-dialog-title>
+      <div class="container">
+        <p>This should provide helpful stuff in the future</p>
+      </div>
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="showDialog = false">Close</md-button>
+      </md-dialog-actions>
+    </md-dialog>  
+
   </md-toolbar>
 </template>
 
@@ -42,56 +53,51 @@ function resizeThrottler(actualResizeHandler) {
   }
 }
 
-import MobileMenu from "@/layout/MobileMenu";
+import MobileMenu from '@/layout/MobileMenu';
 export default {
   components: {
-    MobileMenu
+    MobileMenu,
   },
   props: {
     type: {
       type: String,
-      default: "white",
+      default: 'white',
       validator(value) {
         return [
-          "white",
-          "default",
-          "primary",
-          "danger",
-          "success",
-          "warning",
-          "info"
+          'white',
+          'default',
+          'primary',
+          'danger',
+          'success',
+          'warning',
+          'info',
         ].includes(value);
-      }
+      },
     },
     colorOnScroll: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   data() {
     return {
-      extraNavClasses: "",
-      toggledClass: false
+      extraNavClasses: '',
+      toggledClass: false,
+      showDialog: false,
     };
-  },
-  computed: {
-    showDownload() {
-      const excludedRoutes = ["login", "landing", "profile"];
-      return excludedRoutes.every(r => r !== this.$route.name);
-    }
   },
   methods: {
     bodyClick() {
-      let bodyClick = document.getElementById("bodyClick");
+      let bodyClick = document.getElementById('bodyClick');
 
       if (bodyClick === null) {
-        let body = document.querySelector("body");
-        let elem = document.createElement("div");
-        elem.setAttribute("id", "bodyClick");
+        let body = document.querySelector('body');
+        let elem = document.createElement('div');
+        elem.setAttribute('id', 'bodyClick');
         body.appendChild(elem);
 
-        let bodyClick = document.getElementById("bodyClick");
-        bodyClick.addEventListener("click", this.toggleNavbarMobile);
+        let bodyClick = document.getElementById('bodyClick');
+        bodyClick.addEventListener('click', this.toggleNavbarMobile);
       } else {
         bodyClick.remove();
       }
@@ -104,15 +110,15 @@ export default {
     handleScroll() {
       let scrollValue =
         document.body.scrollTop || document.documentElement.scrollTop;
-      let navbarColor = document.getElementById("toolbar");
+      let navbarColor = document.getElementById('toolbar');
       this.currentScrollValue = scrollValue;
       if (this.colorOnScroll > 0 && scrollValue > this.colorOnScroll) {
         this.extraNavClasses = `md-${this.type}`;
-        navbarColor.classList.remove("md-transparent");
+        navbarColor.classList.remove('md-transparent');
       } else {
         if (this.extraNavClasses) {
-          this.extraNavClasses = "";
-          navbarColor.classList.add("md-transparent");
+          this.extraNavClasses = '';
+          navbarColor.classList.add('md-transparent');
         }
       }
     },
@@ -120,17 +126,17 @@ export default {
       resizeThrottler(this.handleScroll);
     },
     scrollToElement() {
-      let element_id = document.getElementById("downloadSection");
+      let element_id = document.getElementById('downloadSection');
       if (element_id) {
-        element_id.scrollIntoView({ block: "end", behavior: "smooth" });
+        element_id.scrollIntoView({ block: 'end', behavior: 'smooth' });
       }
-    }
+    },
   },
   mounted() {
-    document.addEventListener("scroll", this.scrollListener);
+    document.addEventListener('scroll', this.scrollListener);
   },
   beforeDestroy() {
-    document.removeEventListener("scroll", this.scrollListener);
-  }
+    document.removeEventListener('scroll', this.scrollListener);
+  },
 };
 </script>
