@@ -70,11 +70,15 @@ def image_file(filename):
 	return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 def uploadMicroprocessor(filepath):
-	HOST = '127.0.0.1'	# IP address of the microprocessor
+	HOST = '192.168.0.10'	# IP address of the microprocessor
 	PORT = 12579		# Port to listen on
 	s = socket.socket()
 	#with socket.socket() as s:
-	s.connect((HOST, PORT))
+	try:
+		s.connect((HOST, PORT))
+	except TimeoutError:
+		return("timeout")
+	
 
 	# send file size first
 	file_size = os.path.getsize(filepath)
