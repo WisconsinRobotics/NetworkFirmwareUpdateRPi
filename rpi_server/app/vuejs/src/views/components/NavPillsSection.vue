@@ -45,7 +45,7 @@
 
             </template>
 
-            <template slot="tab-pane-3" @click="getHistory">
+            <template slot="tab-pane-3">
               Select an image to upload from recently flashed images
               <div v-for="image of history">
                 <md-radio v-model="radioImage" :value="image">{{ image }}</md-radio>
@@ -53,7 +53,7 @@
 
               <div class="md-layout md-alignment-top-center">
                 <div class="md-layout-item md-size-100">
-                  <md-button class="md-danger md-block" @click="selectHistory">
+                  <md-button class="md-danger md-block">
                     <md-icon>flash_on</md-icon>Flash {{radioImage}}
                   </md-button>
                 </div>
@@ -77,7 +77,7 @@ export default {
     randomNumber: 0,
     filename: null,
     file: null,
-    history: ['option 1', 'option 2', 'option 3'],
+    history: null,
     radioImage: null,
     noFile: false,
   }),
@@ -91,6 +91,7 @@ export default {
         this.noFile = true;
         return;
       }
+    
       let formData = new FormData();
       formData.append('file', this.file);
 
@@ -99,22 +100,30 @@ export default {
           'Content-Type': 'multipart/form-data',
         },
       });
+
+      this.file = null
+      this.filename = ''
+      location.reload();
     },
     onFileUpload(event) {
       this.file = event.target.files[0];
+      this.filename = this.file.name
     },
     getHistory() {
       axios
         .get('http://localhost:5000/api/history')
-        .then(function(historyJSON) {
+        .then((historyJSON) => {
           // handle success
+          this.history = []
+          for (var key in historyJSON.data) {
+            this.history.push(historyJSON.data[key].name)
+          }
           console.log(historyJSON);
         })
         .catch(function(error) {
           // handle error
           console.log(error);
         });
-      this.history = ['option 1', 'option 2', 'option 3'];
     },
     selectHistory() {
       axios.post('http://localhost:5000/api/selectHistory', radioImage, {
@@ -130,6 +139,9 @@ export default {
       }
       return target.parentNode.removeChild(target);
     },
+  },
+  created(){
+    this.getHistory()
   },
 };
 </script>
