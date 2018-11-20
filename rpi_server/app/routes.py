@@ -2,14 +2,23 @@
 
 # System imports
 import datetime
+import json
 import os
 import socket
+import requests
+import subprocess
 
 # Server imports
-from app import app, UPLOAD_FOLDER
-from flask import Flask, request, redirect, render_template, \
-                             url_for, send_from_directory
-from werkzeug.utils import secure_filename
+from app import app
+from app import UPLOAD_FOLDER
+from app import GIT_HUB
+
+from flask import Flask
+from flask import request
+from flask import redirect
+from flask import render_template
+from flask import url_for
+from flask import send_from_directory
 
 # DB imports
 import sqlite3 as sql
@@ -33,7 +42,11 @@ def root():
 # Shows the home page
 @app.route('/index')
 def index():
-    return render_template('index.html')
+    # Get image history list
+    rows = db.list_imgs()
+
+    # Return populated page
+    return render_template('index.html', rows = rows)
 
 # Downloads a file to server
 @app.route('/upload', methods = ['GET', 'POST'])
@@ -54,9 +67,6 @@ def upload():
 
         # Store the file
         if file:
-            # Sanitize filename (useless now)
-            filename = secure_filename(file.filename)
-
             # Use timestamp as filename
             filename = str(datetime.datetime.now())
 
@@ -80,17 +90,6 @@ def upload():
 def image_file(filename):
     # Upload saved image to requester
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-
-# List all uploaded images, ordered recent first
-@app.route('/history')
-def history():
-    # Get populated HTML page
-    page = db.list_imgs()
-    rows = page[1]
-    page = page[0]
-
-    # Return populated page
-    return render_template(page,rows = rows)
 
 def uploadMicroprocessor(filepath):
     HOST = '127.0.0.1'  # IP address of the microprocessor

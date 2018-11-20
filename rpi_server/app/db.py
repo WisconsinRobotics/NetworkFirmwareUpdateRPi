@@ -90,7 +90,6 @@ def list_imgs():
     except:
         print('Failed to query images')
 
-
     # Return populated page
-    return ("history.html",rows)
+    return rows
 

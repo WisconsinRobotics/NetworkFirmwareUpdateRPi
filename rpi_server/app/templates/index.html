@@ -44,6 +44,27 @@
           </form>
         </b-jumbotron>
       </b-container>
+       <b-container>
+        <b-jumbotron style="background-color: #d00d1f"
+                     text-variant="white"
+                     lead="History" >
+            <table border = 1>
+
+                <thead>
+                    <td>Firmware Timestamp</td>
+                </thead>
+
+                {% for row in rows %}
+                    <tr>
+                        <td>{{row["rowid"]}}</td>
+                        <td>{{row["name"]}}</td>
+                    </tr>
+                {% endfor %}
+
+            </table>
+
+        </b-jumbotron>
+      </b-container>
     </div>
 
 	<!-- <form action="/upload"
@@ -57,7 +78,7 @@
   	   <input type="submit" value="Send">
   	</div>
 	</form> -->
-  
+
     <!-- Start running your app -->
     <script>
       window.app = new Vue({

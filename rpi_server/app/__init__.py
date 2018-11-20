@@ -7,6 +7,9 @@ app = Flask(__name__)
 
 import os
 
+# URL for GitHub requests
+GIT_HUB = 'https://api.github.com/WisconsinRobotics'
+
 # Initialize where to save images
 UPLOAD_FOLDER = app.root_path + '/firmwareImages'
 
