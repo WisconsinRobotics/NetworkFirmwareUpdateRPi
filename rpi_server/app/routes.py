@@ -11,7 +11,7 @@ import subprocess
 # Server imports
 from app import app
 from app import UPLOAD_FOLDER
-from app import GIT_HUB
+from app import GH_URL, GH_UN, GH_PASS
 
 from flask import Flask
 from flask import request
@@ -44,6 +44,11 @@ def root():
 def index():
     # Get image history list
     rows = db.list_imgs()
+
+    # Get GitHub image list
+    response = github()
+
+    print(str(response.json())[0:100])
 
     # Return populated page
     return render_template('index.html', rows = rows)
@@ -91,6 +96,17 @@ def image_file(filename):
     # Upload saved image to requester
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+# Get GitHub images list
+def github():
+    # Authenticate to GitHub TODO use secure key
+    os.system('curl -i https://api.github.com -u ' + GH_UN + ':' + GH_PASS)
+
+    # GET JSON from GitHub
+    response = requests.get(GH_URL)
+
+    return response
+
+# Send an image to the microcontroller
 def uploadMicroprocessor(filepath):
     HOST = '127.0.0.1'  # IP address of the microprocessor
     PORT = 12579        # Port to listen on
