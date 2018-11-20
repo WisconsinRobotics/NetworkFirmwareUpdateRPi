@@ -24,6 +24,9 @@ from flask import send_from_directory
 import sqlite3 as sql
 from app import db
 
+# Set timestamp format
+datetime.timedelta(1000000)
+
 # Only .bin image files allowed
 ALLOWED_EXTENSIONS = set(['bin'])
 
@@ -46,9 +49,9 @@ def index():
     rows = db.list_imgs()
 
     # Get GitHub image list
-    response = github()
+    #response = github()
 
-    print(str(response.json())[0:100])
+    #print(str(response.json())[0:64])
 
     # Return populated page
     return render_template('index.html', rows = rows)
@@ -74,6 +77,7 @@ def upload():
         if file:
             # Use timestamp as filename
             filename = str(datetime.datetime.now())
+            filename = filename.replace(" ","") + '.bin'
 
             # Check if upload path exists, make it
             if not os.path.exists(UPLOAD_FOLDER):
@@ -84,6 +88,12 @@ def upload():
 
             # Add to DB
             db.add_img(filename)
+
+            try:
+                # Send file to microcontroller
+                uploadMicroprocessor(UPLOAD_FOLDER + '/' + filename)
+            except:
+                print('Failed to connect to Microcontroller')
 
         # Close uploaded file
         file.close()
@@ -114,15 +124,19 @@ def uploadMicroprocessor(filepath):
         s.connect((HOST, PORT))
 
         # send file size first
-        file_size = os.path.getsize(filepath).to_bytes(2, byteorder='big')
-        s.sendall(file_size)
+        file_size = os.path.getsize(filepath)
+        s.sendall(file_size.to_bytes(4, byteorder='little'))
 
         # Check clear to send
         cts = s.recv(4)
-        cts = int.from_bytes(cts, byteorder='big')
+        cts = int.from_bytes(cts, byteorder='little')
+        print(cts)
 
         # Send file if clear to send received
-        if cts == 1:
+        if cts == file_size:
             with open(filepath, 'rb') as f:
                 image = f.read()
                 s.sendall(image)
+                rcv = s.recv(4)
+                rcv = int.from_bytes(rcv, byteorder='little')
+                print(rcv)

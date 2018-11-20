@@ -23,17 +23,6 @@ def get_db():
     if db is None:
         db = g.db = sql.connect(app.config['DATABASE'])
 
-    # Create DB connection if needed
-    #if 'db' not in g:
-    #
-    #    g.db = sql.connect
-    #    (
-    #        app.config['DATABASE']
-    #        #detect_types = sql.PARSE_DECLTYPES
-    #    )
-    #    g.db.row_factory = sql.Row
-
-    # Return DB ptr
     return db
 
 # Deinitialize the DB
