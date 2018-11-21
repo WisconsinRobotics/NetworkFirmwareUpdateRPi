@@ -11,8 +11,8 @@ import os
 GH_URL = 'https://api.github.com/orgs/WisconsinRobotics/repos'
 
 # Username and password for Pi's GitHub
-GH_UN   = ''
-GH_PASS = ''
+GH_UN   = 'wr-bot'
+GH_PASS = 'cs506project'
 
 # Initialize where to save images
 UPLOAD_FOLDER = app.root_path + '/firmwareImages'

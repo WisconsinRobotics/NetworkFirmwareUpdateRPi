@@ -49,9 +49,9 @@ def index():
     rows = db.list_imgs()
 
     # Get GitHub image list
-    #response = github()
+    response = github()
 
-    #print(str(response.json())[0:64])
+    print(str(response.json())[0:64])
 
     # Return populated page
     return render_template('index.html', rows = rows)
@@ -75,8 +75,9 @@ def upload():
 
         # Store the file
         if file:
-            # Use timestamp as filename
+            # Use timestamp to nearest second as filename
             filename = str(datetime.datetime.now())
+            filename = filename[0:19]
             filename = filename.replace(" ","") + '.bin'
 
             # Check if upload path exists, make it
