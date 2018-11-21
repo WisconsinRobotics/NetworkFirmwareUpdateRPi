@@ -12,29 +12,37 @@ public class TestMainWebApp{
     		
             try{	Robot r = new Robot();
             		Screen s = new Screen();
-            		
+            		Settings.MinSimilarity = 0.7;
+            		int testsPassed = 0;
             //start server block
             		try {
-            		s.wait(2.0);
+            		s.wait(1.0);
             		s.type(Key.WIN);
             		s.wait(2.0);
             		s.type("git bash");
             		s.type(Key.ENTER);
-            		s.wait(3.0);
+            		s.wait(4.0);
             		s.type("cd Documents");
             		s.type(Key.ENTER);
+            		s.wait(1.0);
             		s.type("cd ECE506");
             		s.type(Key.ENTER);
+            		s.wait(1.0);
             		s.type("cd WhatHaveIDone");
             		s.type(Key.ENTER);
+            		s.wait(1.0);
             		s.type("cd NetworkFirmwareUpdateRPi");
             		s.type(Key.ENTER);
+            		s.wait(1.0);
             		s.type("cd rpi_server");
             		s.type(Key.ENTER);
+            		s.wait(1.0);
             		s.type("cd app");
             		s.type(Key.ENTER);
+            		s.wait(1.0);
             		s.type("cd vuejs");
             		s.type(Key.ENTER);
+            		s.wait(1.0);
             		s.type("npm run dev");
             		s.type(Key.ENTER);
             		s.wait("imgs/IP.jpg",120.0);
@@ -42,6 +50,7 @@ public class TestMainWebApp{
             		s.rightClick("imgs/IPhighlighted.jpg");
             		s.click("imgs/copy.png");
             		System.out.println("Server now running");
+            		testsPassed ++;
             		}
             		catch(Exception e) {
             			System.out.println("Could not start VueJS page");
@@ -61,6 +70,7 @@ public class TestMainWebApp{
                 		r.keyRelease(KeyEvent.VK_CONTROL);
                 		s.type(Key.ENTER);
                 		System.out.println("Successfully navigated to supplied URL");
+                		testsPassed ++;
             		}
             		catch(Exception e) {
             			System.out.println("Could not navigate Web App page");
@@ -70,14 +80,11 @@ public class TestMainWebApp{
             		try {
                 		s.wait(5.0);
                 		s.click("imgs/documentation.jpg");
-                		s.wait(5.0);
-                		s.wait("imgs/documentationShortDescription.jpg");
-                		r.keyPress(KeyEvent.VK_CONTROL);
-                		r.keyPress(KeyEvent.VK_W);
-                		r.keyRelease(KeyEvent.VK_W);
-                		r.keyRelease(KeyEvent.VK_CONTROL);
+                		s.wait(3.0);
+                		s.click("imgs/close.jpg");
                 		s.wait(4.0);
                 		System.out.println("Documentation page successfully loaded");
+                		testsPassed ++;
             		}
             		catch(Exception e) {
             			System.out.println("Error encountered with documentation page");
@@ -99,6 +106,7 @@ public class TestMainWebApp{
             			//add code to validate that image shows up at desired directory
             			s.wait(2.0);
             			System.out.println("Uploaded image successfully transfered!");
+            			testsPassed ++;
             		}
             		catch(Exception e){
             			System.out.println("Failed while choosing a file to upload");
@@ -110,6 +118,7 @@ public class TestMainWebApp{
             			s.wait(1.0);
             			
             			System.out.println("Successfully flashed image from history!");
+            			testsPassed ++;
             		}
             		catch(Exception e) {
             			System.out.println("Error loading image from history");
@@ -125,6 +134,7 @@ public class TestMainWebApp{
             			s.click("imgs/uploadTab.jpg");
             			s.wait(2.0);
             			System.out.println("Successfully switches between tabs");
+            			testsPassed ++;
             		}
             		catch(Exception e) {
             			System.out.println("Error choosing tabs");
@@ -138,7 +148,7 @@ public class TestMainWebApp{
                 			};
             			s.rightClick("imgs/roboticsLink.jpg");
             			s.click("imgs/newTab.png");
-            			s.wait(2.0);
+            			s.wait("imgs/roboticsUpperTab.jpg", 20.0);
             			s.click("imgs/roboticsUpperTab.jpg");
             			s.wait(2.0);
             			s.wait("imgs/roboticsPage.jpg", 4.0);
@@ -148,6 +158,7 @@ public class TestMainWebApp{
                 		r.keyRelease(KeyEvent.VK_CONTROL);
                 		s.wait(3.0);
             			System.out.println("Successfully loaded Wisconsin Robotics Page");
+            			testsPassed ++;
             		}
             		catch(Exception e) {
             			System.out.println("Error loading Wisconsin Robotics page");
@@ -157,9 +168,11 @@ public class TestMainWebApp{
             		try {
             			s.rightClick("imgs/aboutUsLink.jpg");
             			s.click("imgs/newTab.png");
-            			s.wait(2.0);
+            			Settings.MinSimilarity = 0.9;
+            			s.wait("imgs/aboutUsUpperTab.jpg", 20.0);
             			s.click("imgs/aboutUsUpperTab.jpg");
             			s.wait(2.0);
+            			Settings.MinSimilarity = 0.7;
             			s.wait("imgs/aboutUsPage.jpg", 4.0);
             			r.keyPress(KeyEvent.VK_CONTROL);
                 		r.keyPress(KeyEvent.VK_W);
@@ -167,6 +180,7 @@ public class TestMainWebApp{
                 		r.keyRelease(KeyEvent.VK_CONTROL);
                 		s.wait(3.0);
             			System.out.println("Successfully loaded About Us Page");
+            			testsPassed ++;
             		}
             		catch(Exception e) {
             			System.out.println("Error loading About Us page");
@@ -176,7 +190,7 @@ public class TestMainWebApp{
             		try {
             			s.rightClick("imgs/githubLink.jpg");
             			s.click("imgs/newTab.png");
-            			s.wait(2.0);
+            			s.wait("imgs/githubUpperTab.jpg",20.0);
             			s.click("imgs/githubUpperTab.jpg");
             			s.wait(2.0);
             			s.wait("imgs/githubPage.jpg", 4.0);
@@ -186,6 +200,7 @@ public class TestMainWebApp{
                 		r.keyRelease(KeyEvent.VK_CONTROL);
                 		s.wait(3.0);
             			System.out.println("Successfully loaded Github Page");
+            			testsPassed ++;
             		}
             		catch(Exception e) {
             			System.out.println("Error loading github page");
@@ -201,6 +216,7 @@ public class TestMainWebApp{
             		//add - validate file
             		s.click("imgs/closeFolder.jpg");
             		System.out.println("Image successfully sent to correct folder");
+            		testsPassed ++;
             		}
             		catch(Exception e) {
             			System.out.println("Error - Image not sent to folder!");
@@ -212,21 +228,24 @@ public class TestMainWebApp{
             		r.keyRelease(KeyEvent.VK_W);
             		r.keyRelease(KeyEvent.VK_CONTROL);
             		System.out.println("Chrome Closed");
+            		testsPassed ++;
             		//close bash
             		s.wait(2.0);
-            		try{
-            			s.click("imgs/bash.jpg");
-            		}
-            		catch(Exception e) {
-            			
-            		}
+//            		try{
+//            			s.click("imgs/bash.jpg");
+//            		}
+//            		catch(Exception e) {
+//            			
+//            		}
             		r.keyPress(KeyEvent.VK_CONTROL);
             		r.keyPress(KeyEvent.VK_C);
             		r.keyRelease(KeyEvent.VK_C);
             		r.keyRelease(KeyEvent.VK_CONTROL);
             		s.click("imgs/closeFolder.jpg");
             		System.out.println("Git Bash Closed");
+            		testsPassed ++;
             		Sikulix.popup("TESTING COMPLETED!!!!!!!");
+            		System.out.println("TESTING SUMMARY: PASSED " + testsPassed + " out of 12.");
             }
             catch(Exception e) {
             	System.out.println("Undefined Fatal Error");
