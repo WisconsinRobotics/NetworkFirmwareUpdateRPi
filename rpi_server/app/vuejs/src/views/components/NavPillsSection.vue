@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { Tabs } from '@/components';
+import Tabs from './Tabs';
 import axios from 'axios';
 
 export default {
