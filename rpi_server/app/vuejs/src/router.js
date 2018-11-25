@@ -13,7 +13,7 @@ export default new Router({
       name: 'index',
       components: { default: Index, header: MainNavbar, footer: MainFooter },
       props: {
-        header: { colorOnScroll: 400 },
+        header: { colorOnScroll: 100 },
         footer: { backgroundColor: 'black' }
       }
     }
