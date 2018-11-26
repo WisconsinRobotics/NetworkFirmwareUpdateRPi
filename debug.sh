@@ -5,4 +5,4 @@ export FLASK_APP='rpi_server/app/routes.py'
 export FLASK_ENV='development'
 
 # Run the server locally
-flask run
+python3 -m flask run

@@ -6,13 +6,19 @@ import json
 import os
 import socket
 import requests
+import subprocess
 
 # Server imports
-from app import app, UPLOAD_FOLDER
-from flask import Flask, request, redirect, render_template, \
-                             url_for, send_from_directory, jsonify
+from app import app
+from app import UPLOAD_FOLDER
+from app import GH_URL, GH_UN, GH_PASS
 
-from werkzeug.utils import secure_filename
+from flask import Flask
+from flask import request
+from flask import redirect
+from flask import render_template
+from flask import url_for
+from flask import send_from_directory
 
 # DB imports
 import sqlite3 as sql
@@ -51,11 +57,10 @@ def upload():
 
         # Store the file
         if file:
-            # Sanitize filename (useless now)
-            filename = secure_filename(file.filename)
-
-            # Use timestamp as filename
+            # Use timestamp to nearest second as filename
             filename = str(datetime.datetime.now())
+            filename = filename[0:19]
+            filename = filename.replace(" ","") + '.bin'
 
             # Check if upload path exists, make it
             if not os.path.exists(UPLOAD_FOLDER):
@@ -66,6 +71,12 @@ def upload():
 
             # Add to DB
             db.add_img(filename)
+
+            try:
+                # Send file to microcontroller
+                uploadMicroprocessor(UPLOAD_FOLDER + '/' + filename)
+            except:
+                print('Failed to connect to Microcontroller')
 
         # Close uploaded file
         file.close()
@@ -97,6 +108,23 @@ def select_history():
     # Return populated page
     return render_template(page,rows = rows)
 
+# Get GitHub images list
+def github():
+    print('Connecting to GitHub...')
+
+    # Authenticate to GitHub TODO use secure key
+    os.system('curl -i https://api.github.com -u '
+              + GH_UN
+              + ':'
+              + GH_PASS
+              + ' -o github.log')
+
+    # GET JSON from GitHub
+    response = requests.get(GH_URL)
+
+    return response
+
+# Send an image to the microcontroller
 def uploadMicroprocessor(filepath):
     HOST = '127.0.0.1'  # IP address of the microprocessor
     PORT = 12579        # Port to listen on
@@ -104,18 +132,22 @@ def uploadMicroprocessor(filepath):
         s.connect((HOST, PORT))
 
         # send file size first
-        file_size = os.path.getsize(filepath).to_bytes(2, byteorder='big')
-        s.sendall(file_size)
+        file_size = os.path.getsize(filepath)
+        s.sendall(file_size.to_bytes(4, byteorder='little'))
 
         # Check clear to send
         cts = s.recv(4)
-        cts = int.from_bytes(cts, byteorder='big')
+        cts = int.from_bytes(cts, byteorder='little')
+        print(cts)
 
         # Send file if clear to send received
-        if cts == 1:
+        if cts == file_size:
             with open(filepath, 'rb') as f:
                 image = f.read()
                 s.sendall(image)
+                rcv = s.recv(4)
+                rcv = int.from_bytes(rcv, byteorder='little')
+                print(rcv)
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
@@ -124,8 +156,12 @@ def catch_all(path):
         return requests.get('http://localhost:8080/{}'.format(path)).text
     return render_template("index.html")
 
+@app.route('/')
 @app.route('/index')
 def index():
+    # Get GitHub image list
+    response = github().json()
+
     if app.debug:
         return requests.get('http://localhost:8080/').text
     return render_template("index.html")
