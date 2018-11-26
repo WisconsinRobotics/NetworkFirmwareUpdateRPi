@@ -40,3 +40,12 @@ To set up the Microcontroller:
                 >ip addr add 192.168.0.11/24 dev eth0
                 >ip route add 192.168.0.10 dev eth0
                 Where eth0 is your ethernet interface
+
+To run python unit testing and get python code coverage:
+            -Navigate to /rpi_server/app/tests
+            -Run the unit test by typing 'pytest'
+            -Measure code coverage by typing:
+                -'coverage run -m pytest'
+                -'coverage report -m'
+
+
