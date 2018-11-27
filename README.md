@@ -5,6 +5,13 @@ It contains the code that will run our flask server and the bootstrap-vue files 
 NetworkFirmwareUpdateRPi/rpi_server/app/routes.py is our main flask file.  This is where we specify responses to different urls and where POST requests are handled
 NetworkFirmwareUpdateRPi/rpi_server/app/templates/index.html is the html file of our homepage
 
+To set up Flask with Python 3 on Linux:
+            -Run the following commands to set up Python 3:
+                    >sudo apt-get update
+                    >sudo apt-get install python3 python3-pip
+            -Run the following commands to set up Flask:
+                    >python3 -m pip install flask
+
 To run the Flask server:
             -Navigate to the /NetworkFirmwareUpdate directory in a terminal
             -Launch the NPM server:
