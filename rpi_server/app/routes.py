@@ -17,6 +17,7 @@ from flask import Flask
 from flask import request
 from flask import redirect
 from flask import render_template
+from flask import jsonify
 from flask import url_for
 from flask import send_from_directory
 
@@ -94,9 +95,11 @@ def image_file(filename):
 def history():
     # Get populated HTML page
     rows = db.list_imgs()
-
     # Return JSON
-    return json.dumps(rows)
+    response = jsonify(rows)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+
+    return response
 
 @app.route('/api/selectHistory', methods=['POST'])
 def select_history():
