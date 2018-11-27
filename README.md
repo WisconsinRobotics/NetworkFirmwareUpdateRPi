@@ -20,8 +20,8 @@ To run the Flask server:
                     >sh run.sh
             -(Optionally, run debug.sh to locally launch in debug mode)
             -Open a web browser
-            -Connect to (Pi's IP address):8080
-            -(In debug mode, use localhost:8080)
+            -Connect to (Pi's IP address):5000
+            -(In debug mode, use localhost:5000)
             -Select Upload
                 -Select the Browse... bar to choose a .bin file
          or -Select History

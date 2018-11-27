@@ -11,7 +11,7 @@ import subprocess
 # Server imports
 from app import app
 from app import UPLOAD_FOLDER
-from app import GH_URL, GH_UN, GH_PASS
+from app import GH_URL, GH_UN, GH_PASS, GH_REPO, GH_OWNR
 
 from flask import Flask
 from flask import request
@@ -119,10 +119,13 @@ def github():
               + GH_PASS
               + ' -o github.log')
 
-    # GET JSON from GitHub
-    response = requests.get(GH_URL)
+    # GET releases in JSON from GitHub
+    response = requests.get(GH_URL
+              + '/:' + GH_OWNR
+              + '/:' + GH_REPO
+              + '/releases')
 
-    return response
+    return response.json()
 
 # Send an image to the microcontroller
 def uploadMicroprocessor(filepath):
@@ -159,8 +162,10 @@ def catch_all(path):
 @app.route('/')
 @app.route('/index')
 def index():
-    # Get GitHub image list
-    response = github().json()
+    # Get GitHub image list in JSON
+    releases = github()
+
+    print(releases)
 
     if app.debug:
         return requests.get('http://localhost:8080/').text

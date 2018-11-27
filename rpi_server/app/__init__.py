@@ -14,6 +14,10 @@ GH_URL = 'https://api.github.com/orgs/WisconsinRobotics/repos'
 GH_UN   = 'wr-bot'
 GH_PASS = 'cs506project'
 
+# Which GitHub repo has firmware images and who owns it
+GH_REPO = 'NetworkFirmwareUpdate'
+GH_OWNR = 'adwranovsky'
+
 # Initialize where to save images
 UPLOAD_FOLDER = app.root_path + '/firmwareImages'
 
