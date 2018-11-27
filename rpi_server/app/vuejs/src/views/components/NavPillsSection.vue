@@ -80,6 +80,8 @@ export default {
     history: null,
     radioImage: null,
     noFile: false,
+    host: location.hostname,
+    port: 5000
   }),
   components: {
     Tabs,
@@ -95,7 +97,8 @@ export default {
       let formData = new FormData();
       formData.append('file', this.file);
 
-      axios.post('http://localhost:5000/api/upload', formData, {
+      let url = 'http://' + this.host + ':' + this.port + '/api/upload'
+      axios.post(url, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -110,8 +113,9 @@ export default {
       this.filename = this.file.name
     },
     getHistory() {
+      let url = 'http://' + this.host + ':' + this.port + '/api/history'
       axios
-        .get('http://localhost:5000/api/history')
+        .get(url)
         .then((historyJSON) => {
           // handle success
           this.history = []
@@ -126,7 +130,8 @@ export default {
         });
     },
     selectHistory() {
-      axios.post('http://localhost:5000/api/selectHistory', radioImage, {
+      let url = 'http://' + this.host + ':' + this.port + '/api/selectHistory'
+      axios.post(url, radioImage, {
         headers: {
           'Content-Type': 'text/plain',
         },
