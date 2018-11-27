@@ -132,7 +132,7 @@ def github():
 
 # Send an image to the microcontroller
 def uploadMicroprocessor(filepath):
-    HOST = '127.0.0.1'  # IP address of the microprocessor
+    HOST = '192.168.0.10'  # IP address of the microprocessor
     PORT = 12579        # Port to listen on
     with socket.socket() as s:
         s.connect((HOST, PORT))
