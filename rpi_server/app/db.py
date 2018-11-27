@@ -91,7 +91,7 @@ def list_imgs():
     cur = con.cursor()
     try:
         # Query for top 10 entries
-        cur.execute("SELECT * FROM images LIMIT 10")
+        cur.execute("SELECT * FROM images ORDER BY rowid DESC LIMIT 10")
         rows = cur.fetchall();
 
     except:
