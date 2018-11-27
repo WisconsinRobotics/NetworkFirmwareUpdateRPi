@@ -16,7 +16,7 @@ NetworkFirmwareUpdateRPi/rpi_server/app/templates/index.html is the html file of
 
 Note: you must have a recent NodeJS verison installed, i.e. 10.x or 11.x
 
-To run the Flask server:
+**To Run the Flask server:**
 
 1. Navigate to the /NetworkFirmwareUpdate directory in a terminal
 2. Launch the Flask server:
@@ -36,7 +36,7 @@ To run the Flask server:
       specified in routes.py.  We are still working on the flashing
       of the image to the microcontroller, so far it just connects.
 
-To set up the Raspberry Pi:
+**To Set Up the Raspberry Pi:**
 
 1. Connect power to the Pi
 2. Connect the Pi to the microcontroller via ethernet cable
@@ -46,7 +46,7 @@ To set up the Raspberry Pi:
     >ssh pi@192.168.1.200
 6. Follow instructions to run the Flask server above
 
-To set up the Microcontroller:
+**To Set Up the Microcontroller:**
 1. Connect power to the board
 2. Connect the Pi to the board via ethernet cable
 3. run these commands to set up the network interface on the Pi
