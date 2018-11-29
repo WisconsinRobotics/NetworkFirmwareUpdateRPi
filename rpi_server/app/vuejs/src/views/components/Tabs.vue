@@ -13,7 +13,8 @@
       <md-list class="nav-tabs">
         <md-list-item
           v-for="(item, index) in tabName"
-          @click="switchPanel(tabName[index])"
+          @click="switchPanel(tabName[index], tabFunction[index])"
+          ref="tab"
           :key="item"
           :class="[
             {active: isActivePanel(tabName[index])},
@@ -49,6 +50,7 @@ export default {
     plain: Boolean,
     tabName: Array,
     tabIcon: Array,
+    tabFunction: Array,
     colorButton: {
       type: String,
       default: ""
@@ -60,8 +62,11 @@ export default {
     };
   },
   methods: {
-    switchPanel(panel) {
+    switchPanel(panel, clickFunction) {
       this.activePanel = panel;
+      if (clickFunction !== null) {
+        clickFunction()
+      }
     },
     isActivePanel(panel) {
       return this.activePanel == panel;

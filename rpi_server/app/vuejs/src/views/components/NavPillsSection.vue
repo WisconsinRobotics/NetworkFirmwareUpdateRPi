@@ -6,7 +6,13 @@
       </div>
       <div class="md-layout md-alignment-top-center">
         <div class="md-layout-item md-size-50 md-small-size-100">
-          <tabs :tab-name="['Upload', 'GitHub', 'History']" :tab-icon="['folder_open', 'cloud_queue', 'history']" plain nav-pills-icons color-button="danger">
+          <tabs 
+            :tab-name="['Upload', 'GitHub', 'History']" 
+            :tab-icon="['folder_open', 'cloud_queue', 'history']" 
+            :tab-function="[null, null, getHistory]"
+            plain 
+            nav-pills-icons 
+            color-button="danger">
             
             <!-- Upload File Tab -->
             <template slot="tab-pane-1">
@@ -111,8 +117,6 @@ export default {
 
       this.file = null
       this.filename = ''
-
-      this.getHistory()
     },
     onFileUpload(event) {
       this.file = event.target.files[0];
