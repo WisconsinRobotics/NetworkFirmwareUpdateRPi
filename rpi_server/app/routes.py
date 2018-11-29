@@ -8,6 +8,8 @@ import socket
 import requests
 import subprocess
 
+from requests.auth import HTTPBasicAuth
+
 # Server imports
 from app import app
 from app import UPLOAD_FOLDER
@@ -113,22 +115,16 @@ def select_history():
 
 # Get GitHub images list
 def github():
-    print('Connecting to GitHub...')
-
-    # Authenticate to GitHub TODO use secure key
-    os.system('curl -i https://api.github.com -u '
-              + GH_UN
-              + ':'
-              + GH_PASS
-              + ' -o github.log')
-
+    print('Getting GitHub releases...')
     # GET releases in JSON from GitHub
-    response = requests.get(GH_URL
-              + '/:' + GH_OWNR
-              + '/:' + GH_REPO
-              + '/releases')
+    request = requests.get(GH_API
+                         + '/repos'
+                         + '/' + GH_OWNR
+                         + '/' + GH_REPO
+                         + '/releases',
+                         auth=HTTPBasicAuth(GH_UN, GH_PASS))
 
-    return response.json()
+    return request.json()
 
 # Send an image to the microcontroller
 def uploadMicroprocessor(filepath):
@@ -166,9 +162,7 @@ def catch_all(path):
 @app.route('/index')
 def index():
     # Get GitHub image list in JSON
-    releases = github()
-
-    print(releases)
+    print(github())
 
     if app.debug:
         return requests.get('http://localhost:8080/').text

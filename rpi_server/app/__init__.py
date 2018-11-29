@@ -8,7 +8,7 @@ app = Flask(__name__)
 import os
 
 # URL for GitHub requests
-GH_URL = 'https://api.github.com/orgs/WisconsinRobotics/repos'
+GH_API = 'https://api.github.com'
 
 # Username and password for Pi's GitHub
 GH_UN   = 'wr-bot'
@@ -16,7 +16,7 @@ GH_PASS = 'cs506project'
 
 # Which GitHub repo has firmware images and who owns it
 GH_REPO = 'NetworkFirmwareUpdate'
-GH_OWNR = 'adwranovsky'
+GH_OWNR = 'WisconsinRobotics'
 
 # Initialize where to save images
 UPLOAD_FOLDER = app.root_path + '/firmwareImages'
