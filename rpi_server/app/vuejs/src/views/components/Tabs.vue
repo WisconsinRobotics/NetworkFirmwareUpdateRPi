@@ -28,6 +28,7 @@
           <div
             :class="getTabContent(index + 1)"
             v-for="(item, index) in tabName"
+            style="width: 300px;"
             :key="item"
             v-if="isActivePanel(tabName[index])">
             <slot :name="getTabContent(index + 1)">

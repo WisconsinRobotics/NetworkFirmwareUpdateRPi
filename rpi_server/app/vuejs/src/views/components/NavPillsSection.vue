@@ -10,8 +10,11 @@
             
             <!-- Upload File Tab -->
             <template slot="tab-pane-1">
-              Select an image to flash from your files
-
+              
+              <h6 style="text-align: center">
+                Select an image to flash from your files
+              </h6>
+               
               <md-field>
                 <label>Browse for Image</label>
                 <md-file @change="onFileUpload($event)" v-model="filename" accept=".bin" />
@@ -29,13 +32,30 @@
 
             <!-- Git Tab -->
             <template slot="tab-pane-2">
-              Select an image to flash from tagged releases on github
+
+              <h6 style="text-align: center">
+                Select an image to flash from tagged releases on github
+              </h6>
+
+              <div v-for="image of gitImages">
+                <md-radio v-model="gitImage" :value="image">{{ image }}</md-radio>
+              </div>
+
+              <div class="md-layout md-alignment-top-center">
+                <div class="md-layout-item md-size-100">
+                  <md-button class="md-danger md-block" :disabled="this.gitImage == null">
+                    <md-icon>flash_on</md-icon>Flash {{gitImage}}
+                  </md-button>
+                </div>
+              </div>
 
             </template>
 
             <!-- History Tab -->
             <template slot="tab-pane-3">
-              Select an image to upload from recently flashed images
+              <h6 style="text-align: center">
+                Select an image to upload from recently flashed images
+              </h6>
 
               <div v-for="image of history">
                 <md-radio v-model="radioImage" :value="image">{{ image }}</md-radio>
@@ -69,6 +89,8 @@ export default {
     file: null,
     history: null,
     radioImage: null,
+    gitImages: null,
+    gitImage: null,
     host: location.hostname,
     port: 5000
   }),
