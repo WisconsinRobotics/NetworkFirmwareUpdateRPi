@@ -7,7 +7,8 @@
       <div class="md-layout md-alignment-top-center">
         <div class="md-layout-item md-size-50 md-small-size-100">
           <tabs :tab-name="['Upload', 'GitHub', 'History']" :tab-icon="['folder_open', 'cloud_queue', 'history']" plain nav-pills-icons color-button="danger">
-
+            
+            <!-- Upload File Tab -->
             <template slot="tab-pane-1">
               Select an image to flash from your files
 
@@ -18,42 +19,31 @@
 
               <div class="md-layout md-alignment-top-center">
                 <div class="md-layout-item md-size-100">
-                  <md-button class="md-danger md-block" @click="submitFile">
+                  <md-button class="md-danger md-block" :disabled="this.file == null" @click="submitFile">
                     <md-icon>flash_on</md-icon>Flash {{filename}}
                   </md-button>
                 </div>
               </div>
 
-              <template v-if="noFile">
-                <div class="alert alert-danger">
-                  <div class="container">
-                    <button type="button" aria-hidden="true" class="close" @click="event => removeNotify(event,'alert-danger')">
-                      <md-icon>clear</md-icon>
-                    </button>
-                    <div class="alert-icon">
-                      <md-icon>info_outline</md-icon>
-                    </div>
-                    <b> ERROR ALERT </b> : No File Selected! Select a .bin image to flash.
-                  </div>
-                </div>
-              </template>
-
             </template>
 
+            <!-- Git Tab -->
             <template slot="tab-pane-2">
               Select an image to flash from tagged releases on github
 
             </template>
 
+            <!-- History Tab -->
             <template slot="tab-pane-3">
               Select an image to upload from recently flashed images
+
               <div v-for="image of history">
                 <md-radio v-model="radioImage" :value="image">{{ image }}</md-radio>
               </div>
 
               <div class="md-layout md-alignment-top-center">
                 <div class="md-layout-item md-size-100">
-                  <md-button class="md-danger md-block">
+                  <md-button class="md-danger md-block" :disabled="this.radioImage == null">
                     <md-icon>flash_on</md-icon>Flash {{radioImage}}
                   </md-button>
                 </div>
@@ -79,7 +69,6 @@ export default {
     file: null,
     history: null,
     radioImage: null,
-    noFile: false,
     host: location.hostname,
     port: 5000
   }),
@@ -88,12 +77,6 @@ export default {
   },
   methods: {
     submitFile() {
-      console.log;
-      if (this.file == null) {
-        this.noFile = true;
-        return;
-      }
-    
       let formData = new FormData();
       formData.append('file', this.file);
 
@@ -106,7 +89,8 @@ export default {
 
       this.file = null
       this.filename = ''
-      location.reload();
+
+      this.getHistory()
     },
     onFileUpload(event) {
       this.file = event.target.files[0];

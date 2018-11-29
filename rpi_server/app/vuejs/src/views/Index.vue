@@ -5,8 +5,8 @@
         <div class="md-layout-item">
           <div class="image-wrapper">
             <div class="brand">
-              <h1>Robot Image Programmer</h1>
               <h3>Wisconsin Robotics</h3>
+              <h1>Robot Image Programmer</h1>
             </div>
             <div class="title">       
             </div>
