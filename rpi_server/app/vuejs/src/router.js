@@ -1,3 +1,7 @@
+/**
+ * Does necessary routing to index and displays navbar and footer
+ */
+
 import Vue from 'vue'
 import Router from 'vue-router'
 import Index from './views/Index.vue'

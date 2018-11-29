@@ -1,5 +1,6 @@
 /**
- * You can register global mixins here
+ * Adds a global mixin, which applies to every component, to add and remove
+ * that component when its mounted and destroyed, respectively
  */
 
 const GlobalMixins = {
