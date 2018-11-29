@@ -13,7 +13,7 @@ from requests.auth import HTTPBasicAuth
 # Server imports
 from app import app
 from app import UPLOAD_FOLDER
-from app import GH_URL, GH_UN, GH_PASS, GH_REPO, GH_OWNR
+from app import GH_API, GH_UN, GH_PASS, GH_REPO, GH_OWNR
 
 from flask import Flask
 from flask import request
