@@ -9,7 +9,7 @@
           <tabs 
             :tab-name="['Upload', 'GitHub', 'History']" 
             :tab-icon="['folder_open', 'cloud_queue', 'history']" 
-            :tab-function="[null, null, getHistory]"
+            :tab-function="[null, getGit, getHistory]"
             plain 
             nav-pills-icons 
             color-button="danger">
@@ -44,13 +44,13 @@
               </h6>
 
               <div v-for="image of gitImages">
-                <md-radio v-model="gitImage" :value="image">{{ image }}</md-radio>
+                <md-radio v-model="gitRadio" :value="image">{{ image }}</md-radio>
               </div>
 
               <div class="md-layout md-alignment-top-center">
                 <div class="md-layout-item md-size-100">
-                  <md-button class="md-danger md-block" :disabled="this.gitImage == null">
-                    <md-icon>flash_on</md-icon>Flash {{gitImage}}
+                  <md-button class="md-danger md-block" :disabled="this.gitRadio == null">
+                    <md-icon>flash_on</md-icon>Flash {{gitRadio}}
                   </md-button>
                 </div>
               </div>
@@ -64,13 +64,13 @@
               </h6>
 
               <div v-for="image of history">
-                <md-radio v-model="radioImage" :value="image">{{ image }}</md-radio>
+                <md-radio v-model="historyRadio" :value="image">{{ image }}</md-radio>
               </div>
 
               <div class="md-layout md-alignment-top-center">
                 <div class="md-layout-item md-size-100">
-                  <md-button class="md-danger md-block" :disabled="this.radioImage == null">
-                    <md-icon>flash_on</md-icon>Flash {{radioImage}}
+                  <md-button class="md-danger md-block" :disabled="this.historyRadio == null">
+                    <md-icon>flash_on</md-icon>Flash {{historyRadio}}
                   </md-button>
                 </div>
               </div>
@@ -94,9 +94,9 @@ export default {
     filename: null,
     file: null,
     history: null,
-    radioImage: null,
+    historyRadio: null,
+    gitRadio: null,
     gitImages: null,
-    gitImage: null,
     host: location.hostname,
     port: 5000
   }),
@@ -139,13 +139,22 @@ export default {
           console.log(error);
         });
     },
-    selectHistory() {
-      let url = 'http://' + this.host + ':' + this.port + '/api/selectHistory'
-      axios.post(url, radioImage, {
-        headers: {
-          'Content-Type': 'text/plain',
-        },
-      });
+    getGit() {
+      let url = 'http://' + this.host + ':' + this.port + '/api/github'
+      axios
+        .get(url)
+        .then((gitJSON) => {
+          // handle success
+          console.log(gitJSON);
+          this.gitImages = []
+          for (var key in gitJSON.data) {
+            this.gitImages.push(gitJSON.data[key].name)
+          }
+        })
+        .catch(function(error) {
+          // handle error
+          console.log(error);
+        })
     },
     removeNotify(e, notifyClass) {
       var target = e.target;

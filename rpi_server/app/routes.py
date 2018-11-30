@@ -114,6 +114,7 @@ def select_history():
     return render_template(page,rows = rows)
 
 # Get GitHub images list
+@app.route('/api/github', methods=['GET'])
 def github():
     print('Getting GitHub releases...')
     # GET releases in JSON from GitHub
@@ -124,7 +125,11 @@ def github():
                          + '/releases',
                          auth=HTTPBasicAuth(GH_UN, GH_PASS))
 
-    return request.json()
+    
+    response = jsonify(request.json())
+    response.headers.add('Access-Control-Allow-Origin', '*')
+
+    return response
 
 # Send an image to the microcontroller
 def uploadMicroprocessor(filepath):
