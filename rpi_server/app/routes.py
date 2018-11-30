@@ -1,4 +1,4 @@
-## Home page URLs and their functions
+## Web page URLs and their functions
 
 # System imports
 import datetime
@@ -7,8 +7,6 @@ import os
 import socket
 import requests
 import subprocess
-
-from requests.auth import HTTPBasicAuth
 
 # Server imports
 from app import app
@@ -42,6 +40,7 @@ def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# Upload a file from user's computer
 @app.route('/api/upload', methods=['GET', 'POST'])
 def upload():
     # Respond to POST requests
@@ -73,6 +72,7 @@ def upload():
             file.save(UPLOAD_FOLDER + '/' + filename)
 
             # Add to DB
+            print('Adding file to DB...')
             db.add_img(filename)
 
             try:
@@ -103,15 +103,17 @@ def history():
 
     return response
 
-@app.route('/api/selectHistory', methods=['POST'])
-def select_history():
-    # Get populated HTML page
-    page = db.list_imgs()
-    rows = page[1]
-    page = page[0]
+# Upload a file from server DB
+@app.route('/api/uploadHistory', methods=['GET', 'POST'])
+def uploadHistory():
+    # Respond to POST requests
+    if request.method == 'POST':
 
-    # Return populated page
-    return render_template(page,rows = rows)
+        # Redirect file to upload()
+        redirect(url_for('upload'), code=307)
+
+    # Return to homepage
+    return redirect(url_for('index'))
 
 # Get GitHub images list
 @app.route('/api/github', methods=['GET'])
@@ -123,13 +125,21 @@ def github():
                          + '/' + GH_OWNR
                          + '/' + GH_REPO
                          + '/releases',
-                         auth=HTTPBasicAuth(GH_UN, GH_PASS))
+                         auth=(GH_UN, GH_PASS))
 
-    
+
     response = jsonify(request.json())
     response.headers.add('Access-Control-Allow-Origin', '*')
 
     return response
+
+# Upload a file from GitHub
+@app.route('/api/uploadGit', methods=['GET', 'POST'])
+def uploadGit():
+    print('Getting GitHub assets...')
+    # TODO
+
+    return None
 
 # Send an image to the microcontroller
 def uploadMicroprocessor(filepath):

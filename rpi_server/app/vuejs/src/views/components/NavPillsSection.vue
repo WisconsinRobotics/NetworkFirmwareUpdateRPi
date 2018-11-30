@@ -6,21 +6,21 @@
       </div>
       <div class="md-layout md-alignment-top-center">
         <div class="md-layout-item md-size-50 md-small-size-100">
-          <tabs 
-            :tab-name="['Upload', 'GitHub', 'History']" 
-            :tab-icon="['folder_open', 'cloud_queue', 'history']" 
+          <tabs
+            :tab-name="['Upload', 'GitHub', 'History']"
+            :tab-icon="['folder_open', 'cloud_queue', 'history']"
             :tab-function="[null, getGit, getHistory]"
-            plain 
-            nav-pills-icons 
+            plain
+            nav-pills-icons
             color-button="danger">
-            
+
             <!-- Upload File Tab -->
             <template slot="tab-pane-1">
-              
+
               <h6 style="text-align: center">
                 Select an image to flash from your files
               </h6>
-               
+
               <md-field>
                 <label>Browse for Image</label>
                 <md-file @change="onFileUpload($event)" v-model="filename" accept=".bin" />
@@ -114,7 +114,7 @@ export default {
           'Content-Type': 'multipart/form-data',
         }
       }
-      
+
       axios.post(url, formData, config);
 
       this.file = null
@@ -144,7 +144,7 @@ export default {
         headers: {
           'Access-Control-Allow-Headers': '*',
           'Content-Type': 'application/json',
-        }     
+        }
       }
       axios.post(url, data, config);
 
