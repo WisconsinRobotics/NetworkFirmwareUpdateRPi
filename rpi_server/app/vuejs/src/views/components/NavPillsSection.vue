@@ -115,7 +115,7 @@ export default {
         }
       }
       
-      axios.post(url, formData, headers);
+      axios.post(url, formData, config);
 
       this.file = null
       this.filename = ''
