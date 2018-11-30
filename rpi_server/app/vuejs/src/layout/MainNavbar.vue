@@ -28,8 +28,29 @@
 
     <md-dialog :md-active.sync="showDialog">
       <md-dialog-title>Help</md-dialog-title>
-      <div class="container">
-        <p>This should provide helpful stuff in the future</p>
+      <div class="container" id="helpTextID">
+		
+		<p id="helpTextID" white-space: pre>Thank you for using the Robotic Image Programming Tool! <br>
+We hope that it helps with all your robotic image programming needs. <br>
+<br>
+By selecting "Upload", you can select your own .bin file to flash to
+the robot.<br>
+<br>
+Selecting "Github" will allow you to select from images available from
+the Wisconsin Robotics github repository.<br>
+<br>
+Selecting "History" will allow you to select from images previously 
+flashed to the robot. <br>
+<br>
+Once an image has been selected, the "Flash" button will initiate the 
+transfer to the robot.<br>
+<br>
+Thank you again for purchasing this magnificent app.<br>
+Additional information is available through the links at the bottom 
+of this page. <br>
+<br>
+Have a wonderful day.</p>
+		
       </div>
       <md-dialog-actions>
         <md-button class="md-primary" @click="showDialog = false">Close</md-button>
@@ -47,7 +68,7 @@ function resizeThrottler(actualResizeHandler) {
     resizeTimeout = setTimeout(() => {
       resizeTimeout = null;
       actualResizeHandler();
-
+	
       // The actualResizeHandler will execute at a rate of 15fps
     }, 66);
   }
@@ -84,9 +105,11 @@ export default {
       extraNavClasses: '',
       toggledClass: false,
       showDialog: false,
+	  helpText: ''
     };
   },
   methods: {
+  
     bodyClick() {
       let bodyClick = document.getElementById('bodyClick');
 
@@ -106,6 +129,7 @@ export default {
       this.NavbarStore.showNavbar = !this.NavbarStore.showNavbar;
       this.toggledClass = !this.toggledClass;
       this.bodyClick();
+	  
     },
     handleScroll() {
       let scrollValue =
