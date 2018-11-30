@@ -6,6 +6,10 @@ files that create our web interface.
 NetworkFirmwareUpdateRPi/rpi_server/app/routes.py is our main flask file.  This is where we specify responses to different urls and where POST requests are handled
 NetworkFirmwareUpdateRPi/rpi_server/app/templates/index.html is the html file of our homepage
 
+**To check if you have all the libraries installed on Linux:**
+
+1. Navigate to the /NetworkFirmwareUpdate directory and run: "sh installation.sh"
+
 **To Set Up Flask with Python 3 on Linux:**
 1. Run the following commands to set up Python 3:
     >sudo apt-get update
@@ -35,6 +39,12 @@ Note: you must have a recent NodeJS verison installed, i.e. 10.x or 11.x
     * So far this will download the chosen file to a local directory
       specified in routes.py.  We are still working on the flashing
       of the image to the microcontroller, so far it just connects.
+
+**To Run the unit testing of Python code with pytest:**
+
+1. Navigate to the NetworkFirmwareUpdateRPi/rpi_server/app/tests directory
+2. Run the unit tests by typing: "coverage run -m pytest" There may be tests that take a long time to complete if they're timing out
+3. Analyze code coverage by typing: "coverage report -m"
 
 **To Set Up the Raspberry Pi:**
 
