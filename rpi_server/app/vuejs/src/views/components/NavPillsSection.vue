@@ -28,7 +28,7 @@
 
               <div class="md-layout md-alignment-top-center">
                 <div class="md-layout-item md-size-100">
-                  <md-button class="md-danger md-block" :disabled="this.file == null" @click="submitFile">
+                  <md-button class="md-danger md-block" :disabled="this.file == null" @click="postFile">
                     <md-icon>flash_on</md-icon>Flash {{filename}}
                   </md-button>
                 </div>
@@ -49,7 +49,7 @@
 
               <div class="md-layout md-alignment-top-center">
                 <div class="md-layout-item md-size-100">
-                  <md-button class="md-danger md-block" :disabled="this.gitRadio == null">
+                  <md-button class="md-danger md-block" :disabled="this.gitRadio == null" @click="postGit">
                     <md-icon>flash_on</md-icon>Flash {{gitRadio}}
                   </md-button>
                 </div>
@@ -69,7 +69,7 @@
 
               <div class="md-layout md-alignment-top-center">
                 <div class="md-layout-item md-size-100">
-                  <md-button class="md-danger md-block" :disabled="this.historyRadio == null">
+                  <md-button class="md-danger md-block" :disabled="this.historyRadio == null" @click="postHistory">
                     <md-icon>flash_on</md-icon>Flash {{historyRadio}}
                   </md-button>
                 </div>
@@ -97,6 +97,7 @@ export default {
     historyRadio: null,
     gitRadio: null,
     gitImages: null,
+    gitReleaseIDs: null,
     host: location.hostname,
     port: 5000
   }),
@@ -104,19 +105,51 @@ export default {
     Tabs,
   },
   methods: {
-    submitFile() {
+    postFile() {
+      let url = 'http://' + this.host + ':' + this.port + '/api/upload'
       let formData = new FormData();
       formData.append('file', this.file);
-
-      let url = 'http://' + this.host + ':' + this.port + '/api/upload'
-      axios.post(url, formData, {
+      let config = {
         headers: {
           'Content-Type': 'multipart/form-data',
-        },
-      });
+        }
+      }
+      
+      axios.post(url, formData, headers);
 
       this.file = null
       this.filename = ''
+    },
+    postGit() {
+      let url = 'http://' + this.host + ':' + this.port + '/api/uploadGit'
+      let data = {
+        id: this.gitReleaseIDs[this.gitRadio]
+      }
+      let config = {
+        headers: {
+          'Access-Control-Allow-Headers': '*',
+          'Content-Type': 'application/json',
+        }
+      }
+      axios.post(url, data, config);
+
+      this.gitRadio = null
+    },
+    postHistory() {
+      let url = 'http://' + this.host + ':' + this.port + '/api/uploadHistory'
+      let data = {
+        file: this.historyRadio
+      }
+      let config = {
+        headers: {
+          'Access-Control-Allow-Headers': '*',
+          'Content-Type': 'application/json',
+        }     
+      }
+      axios.post(url, data, config);
+
+      this.historyRadio = null
+      this.getHistory()
     },
     onFileUpload(event) {
       this.file = event.target.files[0];
@@ -147,8 +180,10 @@ export default {
           // handle success
           console.log(gitJSON);
           this.gitImages = []
+          this.gitReleaseIDs = {}
           for (var key in gitJSON.data) {
             this.gitImages.push(gitJSON.data[key].name)
+            this.gitReleaseIDs[gitJSON.data[key].name] = gitJSON.data[key].id
           }
         })
         .catch(function(error) {
