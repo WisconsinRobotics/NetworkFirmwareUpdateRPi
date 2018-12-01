@@ -12,7 +12,8 @@ GH_API = 'https://api.github.com'
 
 # Username and password for Pi's GitHub
 GH_UN   = 'wr-bot'
-GH_PASS = 'cs506project'
+GH_PASS = open(os.getcwd() + '/rpi_server/app/github.txt', 'r') \
+         .read()
 
 # Which GitHub repo has firmware images and who owns it
 GH_REPO = 'NetworkFirmwareUpdate'

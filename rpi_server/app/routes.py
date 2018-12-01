@@ -136,8 +136,9 @@ def github():
                          + '/releases',
                          auth=(GH_UN, GH_PASS))
 
-
+    print(request)
     response = jsonify(request.json())
+
     response.headers.add('Access-Control-Allow-Origin', '*')
 
     return response
@@ -145,10 +146,34 @@ def github():
 # Upload a file from GitHub
 @app.route('/api/uploadGit', methods=['GET', 'POST'])
 def uploadGit():
-    print('Getting GitHub assets...')
-    # TODO
+    # Respond to POST requests
+    if request.method == 'POST':
 
-    return None
+        # Parse filename
+        releaseID = str(request.json['id'])
+
+        # GET requested asset
+        print('Getting GitHub releases...')
+        response = requests.get(GH_API
+                         + '/repos'
+                         + '/' + GH_OWNR
+                         + '/' + GH_REPO
+                         + '/releases'
+                         + '/' + releaseID
+                         + '/assets',
+                         auth=(GH_UN, GH_PASS))
+
+        # Parse file
+        # TODO
+
+        # Construct URL for api/upload
+        url = request.url_root + 'api/upload'
+
+        # Send file to upload()
+#        response = requests.post(url, files = {'file' : file})
+
+    # Return to homepage
+    return redirect(url_for('index'))
 
 # Send an image to the microcontroller
 def uploadMicroprocessor(filepath):
