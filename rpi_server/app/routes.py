@@ -109,8 +109,17 @@ def uploadHistory():
     # Respond to POST requests
     if request.method == 'POST':
 
-        # Redirect file to upload()
-        redirect(url_for('upload'), code=307)
+        # Parse filename
+        filename = request.json['file']
+
+        # Get requested file
+        file = open(UPLOAD_FOLDER + '/' + filename)
+
+        # Construct URL for api/upload
+        url = request.url_root + 'api/upload'
+
+        # Send file to upload()
+        response = requests.post(url, files = {'file' : file})
 
     # Return to homepage
     return redirect(url_for('index'))
@@ -176,8 +185,6 @@ def catch_all(path):
 @app.route('/')
 @app.route('/index')
 def index():
-    # Get GitHub image list in JSON
-    print(github())
 
     if app.debug:
         return requests.get('http://localhost:8080/').text
