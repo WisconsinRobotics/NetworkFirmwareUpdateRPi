@@ -56,6 +56,13 @@ def init_db():
     with app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
 
+# Iterate rows to produce JSON
+def dict_factory(cursor, row):
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
+
 # Add a new image to DB
 def add_img(name):
     # Connect to the DB
@@ -80,17 +87,16 @@ def add_img(name):
 def list_imgs():
     # Connect to the DB
     con = get_db()
-    con.row_factory = sql.Row
+    con.row_factory = dict_factory
     cur = con.cursor()
     try:
         # Query for top 10 entries
-        cur.execute("SELECT * FROM images LIMIT 10")
+        cur.execute("SELECT * FROM images ORDER BY rowid DESC LIMIT 10")
         rows = cur.fetchall();
 
     except:
         print('Failed to query images')
 
-
     # Return populated page
-    return ("history.html",rows)
+    return rows
 

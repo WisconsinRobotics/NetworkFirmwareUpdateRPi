@@ -1,2 +1,9 @@
 **/*pycache*
 **/*firmwareImages*/
+**/*node_modules*/
+**/*dist
+**/*package-lock.json*
+**/*cache*/
+**/*coverage*/
+*.log
+*.bin
