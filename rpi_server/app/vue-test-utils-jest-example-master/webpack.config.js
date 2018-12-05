@@ -30,6 +30,29 @@ module.exports = {
         options: {
           name: '[name].[ext]?[hash]'
         }
+      },
+      {
+        test: /\.scss$/,
+        include: [
+                  path.resolve(__dirname, 'src', 'assets')
+                 ],
+        use: [
+                    {loader:'style-loader'},
+                    {loader:'css-loader'},
+                    {loader:'sass-loader'}
+             ]
+      },
+      {
+        test: /\.css$/,
+        include: [
+                  path.resolve(__dirname, 'src', 'assets'),
+                  path.resolve(__dirname, 'node_modules', 'vue-material', 'dist')
+                 ],
+        use: [
+                    {loader:'style-loader'},
+                    {loader:'css-loader'},
+                    {loader:'sass-loader'}
+             ]
       }
     ]
   },
