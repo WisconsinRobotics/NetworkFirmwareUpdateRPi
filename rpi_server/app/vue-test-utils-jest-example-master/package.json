@@ -54,6 +54,11 @@
       "js",
       "vue"
     ],
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "**/*.vue",
+      "!**/node_modules/**"
+    ],
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
     },
