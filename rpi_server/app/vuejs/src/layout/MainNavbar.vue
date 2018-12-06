@@ -16,8 +16,8 @@
             <md-list>
 
               <md-list-item @click="showDialog = true">
-                <i class="material-icons">content_paste</i>
-                <p style="margin-bottom: 0px; margin-left: 5px;">Help</p>
+                <md-icon style="margin-right: 5px;">help_outline</md-icon>
+                <p style="margin-bottom: 0px; margin-left: 0px;">Help</p>
               </md-list-item>
 
             </md-list>
@@ -61,6 +61,8 @@ Have a wonderful day.</p>
 </template>
 
 <script>
+import MobileMenu from './MobileMenu.vue';
+
 let resizeTimeout;
 function resizeThrottler(actualResizeHandler) {
   // ignore resize events as long as an actualResizeHandler execution is in the queue
@@ -74,7 +76,6 @@ function resizeThrottler(actualResizeHandler) {
   }
 }
 
-import MobileMenu from '@/layout/MobileMenu';
 export default {
   components: {
     MobileMenu,

@@ -4,7 +4,7 @@
 
 import Vue from 'vue'
 import Router from 'vue-router'
-import Index from './views/Index.vue'
+import Index from './components/Index.vue'
 import MainNavbar from './layout/MainNavbar.vue'
 import MainFooter from './layout/MainFooter.vue'
 
