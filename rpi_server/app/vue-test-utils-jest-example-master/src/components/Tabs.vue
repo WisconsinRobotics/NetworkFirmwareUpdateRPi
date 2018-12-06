@@ -20,7 +20,7 @@
             {active: isActivePanel(tabName[index])},
             {[getColorButton(colorButton)]: isActivePanel(tabName[index])}]">
             {{tabName[index]}}
-            <md-icon md-src="tabIcon[index]" v-if="navPillsIcons" />
+            <md-icon v-if="navPillsIcons">{{tabIcon[index]}}</md-icon>
         </md-list-item>
       </md-list>
 

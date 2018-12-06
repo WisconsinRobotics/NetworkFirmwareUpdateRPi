@@ -8,7 +8,7 @@
         <div class="md-layout-item md-size-50 md-small-size-100">
           <tabs
             :tab-name="['Upload', 'GitHub', 'History']"
-            :tab-icon="['/assets/folder_open.svg', '/assets/cloud_queue.svg', '/assets/history.svg"/']"
+            :tab-icon="['folder_open', 'cloud_queue', 'history']"
             :tab-function="[null, getGit, getHistory]"
             plain
             nav-pills-icons
@@ -29,7 +29,7 @@
               <div class="md-layout md-alignment-top-center">
                 <div class="md-layout-item md-size-100">
                   <md-button class="md-danger md-block" :disabled="this.file == null" @click="postFile">
-                    <md-icon md-src="/assets/flash_on.svg" />Flash {{filename}}
+                    <md-icon>flash_on</md-icon>Flash {{filename}}
                   </md-button>
                 </div>
               </div>
@@ -49,7 +49,7 @@
               <div class="md-layout md-alignment-top-center">
                 <div class="md-layout-item md-size-100">
                   <md-button class="md-danger md-block" :disabled="this.gitRadio == null" @click="postGit">
-                    <md-icon md-src="/assets/flash_on.svg" />Flash {{gitRadio}}
+                    <md-icon>flash_on</md-icon>Flash {{gitRadio}}
                   </md-button>
                 </div>
               </div>
@@ -69,7 +69,7 @@
               <div class="md-layout md-alignment-top-center">
                 <div class="md-layout-item md-size-100">
                   <md-button class="md-danger md-block" :disabled="this.historyRadio == null" @click="postHistory">
-                    <md-icon md-src="/assets/flash_on.svg" />Flash {{historyRadio}}
+                    <md-icon>flash_on</md-icon>Flash {{historyRadio}}
                   </md-button>
                 </div>
               </div>

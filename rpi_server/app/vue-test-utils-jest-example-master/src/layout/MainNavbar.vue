@@ -15,9 +15,9 @@
             </mobile-menu>
             <md-list>
 
-              <md-list-item @click="showDialog = true"> -->
-                <!-- <md-icon md-src="/assets/help_outline.svg" /> -->
-                <p style="margin-bottom: 0px; margin-left: 5px;">Help</p>
+              <md-list-item @click="showDialog = true">
+                <md-icon style="margin-right: 5px;">help_outline</md-icon>
+                <p style="margin-bottom: 0px; margin-left: 0px;">Help</p>
               </md-list-item>
 
             </md-list>

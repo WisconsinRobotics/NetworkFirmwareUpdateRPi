@@ -1,5 +1,7 @@
 <template>
   <div class="wrapper">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
     <div class="page-header header-filter" :style="headerStyle">
       <div class="md-layout">
         <div class="md-layout-item">
