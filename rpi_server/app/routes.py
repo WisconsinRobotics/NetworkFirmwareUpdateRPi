@@ -128,6 +128,8 @@ def uploadHistory():
 @app.route('/api/github', methods=['GET'])
 def github():
     print('Getting GitHub releases...')
+
+    headers = {'Authentication':'Basic '}
     # GET releases in JSON from GitHub
     request = requests.get(GH_API
                          + '/repos'
@@ -136,7 +138,6 @@ def github():
                          + '/releases',
                          auth=(GH_UN, GH_PASS))
 
-    print(request)
     response = jsonify(request.json())
 
     response.headers.add('Access-Control-Allow-Origin', '*')
@@ -153,16 +154,17 @@ def uploadGit():
         releaseID = str(request.json['id'])
 
         # GET requested asset
-        print('Getting GitHub releases...')
-        response = requests.get(GH_API
-                         + '/repos'
-                         + '/' + GH_OWNR
-                         + '/' + GH_REPO
-                         + '/releases'
-                         + '/' + releaseID
-                         + '/assets',
-                         auth=(GH_UN, GH_PASS))
+        print('Getting GitHub assets...')
+        request = requests.get(GH_API
+                             + '/repos'
+                             + '/' + GH_OWNR
+                             + '/' + GH_REPO
+                             + '/releases'
+                             + '/' + releaseID
+                             + '/assets',
+                             auth=(GH_UN, GH_PASS))
 
+        print(request)
         # Parse file
         # TODO
 
