@@ -11,7 +11,7 @@ import subprocess
 # Server imports
 from app import app
 from app import UPLOAD_FOLDER
-from app import GH_API, GH_UN, GH_PASS, GH_REPO, GH_OWNR
+from app import GH_API, GH_UN, GH_PASS
 
 from flask import Flask
 from flask import request
@@ -45,7 +45,7 @@ def allowed_file(filename):
 def upload():
     # Respond to POST requests
     if request.method == 'POST':
-
+        print(request)
         # Check if request contains file
         if 'file' not in request.files:
             print('No file part')
@@ -104,7 +104,7 @@ def history():
     return response
 
 # Upload a file from server DB
-@app.route('/api/uploadHistory', methods=['GET', 'POST'])
+@app.route('/api/uploadHistory', methods=['POST'])
 def uploadHistory():
     # Respond to POST requests
     if request.method == 'POST':
@@ -129,14 +129,9 @@ def uploadHistory():
 def github():
     print('Getting GitHub releases...')
 
-    headers = {'Authentication':'Basic '}
     # GET releases in JSON from GitHub
-    request = requests.get(GH_API
-                         + '/repos'
-                         + '/' + GH_OWNR
-                         + '/' + GH_REPO
-                         + '/releases',
-                         auth=(GH_UN, GH_PASS))
+    request = requests.get(GH_API,
+                           auth=(GH_UN, GH_PASS))
 
     response = jsonify(request.json())
 
@@ -145,34 +140,55 @@ def github():
     return response
 
 # Upload a file from GitHub
-@app.route('/api/uploadGit', methods=['GET', 'POST'])
+@app.route('/api/uploadGit', methods=['POST'])
 def uploadGit():
+    print('Getting GitHub assets...')
     # Respond to POST requests
     if request.method == 'POST':
 
-        # Parse filename
+        # Parse release ID
         releaseID = str(request.json['id'])
 
-        # GET requested asset
-        print('Getting GitHub assets...')
-        request = requests.get(GH_API
-                             + '/repos'
-                             + '/' + GH_OWNR
-                             + '/' + GH_REPO
-                             + '/releases'
-                             + '/' + releaseID
-                             + '/assets',
-                             auth=(GH_UN, GH_PASS))
+        # GET asset ID
+        assets = requests.get(GH_API
+                            + '/' + releaseID
+                            + '/assets',
+                            auth=(GH_UN, GH_PASS))
 
-        print(request)
-        # Parse file
-        # TODO
+        # Parse asset ID, return if none
+        try:
+            assetID = assets.json()[0]['id']
+        except:
+            print('Cannot find assetID of first asset')
+            return redirect(url_for('index'))
 
-        # Construct URL for api/upload
+        # Set headers to accept binary content
+        headers = {'Accept':'application/octet-stream'}
+
+        # GET asset binary stream
+        binary = requests.get(GH_API
+                            + '/assets'
+                            + '/' + str(assetID),
+                            auth=(GH_UN, GH_PASS),
+                            headers = headers)
+
+        # Write binary to file
+        file = open(app.root_path + '/temp.bin', 'wb')
+        file.write(binary.content)
+        file.close()
+
+        # Construct URL, set headers, read file
         url = request.url_root + 'api/upload'
+        headers = {'Content-Type':'application/octet-stream'}
+        file = open(app.root_path + '/temp.bin', 'rb')
 
         # Send file to upload()
-#        response = requests.post(url, files = {'file' : file})
+        requests.post(url, data = file.read(),
+                      headers = headers)
+
+        # Clean up the file
+        file.close()
+        os.remove(app.root_path + '/temp.bin')
 
     # Return to homepage
     return redirect(url_for('index'))
