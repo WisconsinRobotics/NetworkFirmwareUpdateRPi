@@ -7,6 +7,7 @@ import os
 import socket
 import requests
 import subprocess
+import tempfile
 
 # Server imports
 from app import app
@@ -45,7 +46,7 @@ def allowed_file(filename):
 def upload():
     # Respond to POST requests
     if request.method == 'POST':
-        print(request)
+
         # Check if request contains file
         if 'file' not in request.files:
             print('No file part')
@@ -173,22 +174,15 @@ def uploadGit():
                             headers = headers)
 
         # Write binary to file
-        file = open(app.root_path + '/temp.bin', 'wb')
-        file.write(binary.content)
-        file.close()
+        with tempfile.NamedTemporaryFile(mode = 'w+b',
+                                    suffix = '.bin') as file:
+            file.write(binary.content)
 
-        # Construct URL, set headers, read file
-        url = request.url_root + 'api/upload'
-        headers = {'Content-Type':'application/octet-stream'}
-        file = open(app.root_path + '/temp.bin', 'rb')
+            # Construct URL for api/upload, set headers
+            url = request.url_root + 'api/upload'
 
-        # Send file to upload()
-        requests.post(url, data = file.read(),
-                      headers = headers)
-
-        # Clean up the file
-        file.close()
-        os.remove(app.root_path + '/temp.bin')
+            # Send file to upload()
+            requests.post(url, files = {'file':file})
 
     # Return to homepage
     return redirect(url_for('index'))
